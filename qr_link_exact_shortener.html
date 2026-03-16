@@ -1,0 +1,179 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g1:#6366f1;--g2:#8b5cf6;--g3:#06b6d4;--card:rgba(255,255,255,0.06);--card2:rgba(255,255,255,0.10);--bdr:rgba(255,255,255,0.12);--bdr2:rgba(255,255,255,0.22);--txt:#f1f5f9;--txt2:#94a3b8;--txt3:#64748b;--r:14px;--r2:9px}
+.app{background:linear-gradient(135deg,#0f0c29,#1a1040,#0f172a);border-radius:var(--r);padding:1.75rem;min-height:480px;position:relative;overflow:hidden}
+.app::before{content:'';position:absolute;top:-80px;right:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(99,102,241,.25) 0%,transparent 70%);pointer-events:none}
+.app::after{content:'';position:absolute;bottom:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(6,182,212,.18) 0%,transparent 70%);pointer-events:none}
+.header{margin-bottom:1.5rem;position:relative;z-index:1}
+.header h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(90deg,#a5b4fc,#67e8f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px}
+.header p{font-size:13px;color:var(--txt2);margin-top:4px;font-family:'DM Sans',sans-serif}
+.tabs{display:flex;gap:6px;margin-bottom:1.5rem;background:rgba(255,255,255,.05);padding:4px;border-radius:var(--r);border:0.5px solid var(--bdr);position:relative;z-index:1}
+.tab{flex:1;padding:9px 12px;border:none;border-radius:var(--r2);background:transparent;cursor:pointer;font-size:13px;font-weight:500;color:var(--txt2);transition:all .18s;font-family:'DM Sans',sans-serif}
+.tab.active{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;box-shadow:0 2px 12px rgba(99,102,241,.4)}
+.tab:hover:not(.active){color:var(--txt);background:var(--card)}
+.panel{display:none}.panel.active{display:block;position:relative;z-index:1}
+.field-label{font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;font-family:'Syne',sans-serif}
+.input-row{display:flex;gap:8px;margin-bottom:14px}
+.inp{flex:1;padding:11px 14px;border:0.5px solid var(--bdr2);border-radius:var(--r2);background:var(--card2);color:var(--txt);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all .15s}
+.inp:focus{border-color:rgba(99,102,241,.6);background:rgba(255,255,255,.12);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.inp::placeholder{color:var(--txt3)}
+.btn-gen{padding:11px 18px;border:none;border-radius:var(--r2);background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;letter-spacing:.3px;transition:all .18s;white-space:nowrap;box-shadow:0 2px 12px rgba(99,102,241,.35)}
+.btn-gen:hover{opacity:.88;transform:translateY(-1px)}.btn-gen:active{transform:scale(.97)}
+.btn-sm{padding:8px 13px;border:0.5px solid var(--bdr2);border-radius:var(--r2);background:var(--card);color:var(--txt);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.btn-sm:hover{background:var(--card2)}
+.qr-stage{border:0.5px solid var(--bdr);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.qr-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;gap:10px}
+.qr-empty .ico{width:52px;height:52px;border:1.5px dashed var(--bdr2);border-radius:var(--r2);display:flex;align-items:center;justify-content:center}
+.qr-empty span{font-size:13px;color:var(--txt3);font-family:'DM Sans',sans-serif}
+.qr-result{display:flex}
+.qr-img-col{padding:1.5rem;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(6,182,212,.08));border-right:0.5px solid var(--bdr)}
+.qr-img-col img{display:block;border-radius:var(--r2);border:2px solid rgba(255,255,255,.1)}
+.qr-info-col{flex:1;padding:1.25rem;display:flex;flex-direction:column;gap:12px}
+.qr-url-text{font-size:11px;font-family:monospace;color:var(--txt2);word-break:break-all;line-height:1.5;background:rgba(0,0,0,.25);padding:8px 10px;border-radius:var(--r2);border:0.5px solid var(--bdr)}
+.size-track{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.size-track input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:linear-gradient(90deg,var(--g1),var(--g3));border-radius:2px;outline:none}
+.size-track input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(99,102,241,.4);cursor:pointer}
+.size-badge{font-size:12px;font-weight:600;color:var(--txt);background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(139,92,246,.2));border:0.5px solid rgba(99,102,241,.3);padding:4px 10px;border-radius:20px;min-width:54px;text-align:center;font-family:'Syne',sans-serif}
+.divider{height:0.5px;background:var(--bdr);margin:10px 0}
+.badge-ok{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#6ee7b7;background:rgba(16,185,129,.15);border:0.5px solid rgba(16,185,129,.25);padding:4px 10px;border-radius:20px;font-family:'DM Sans',sans-serif}
+.result-box{margin-top:14px;padding:1.25rem;border:0.5px solid var(--bdr);border-radius:var(--r);background:var(--card2)}
+.result-label{font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;font-family:'Syne',sans-serif}
+.result-link{font-size:14px;font-family:monospace;background:linear-gradient(90deg,#a5b4fc,#67e8f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;word-break:break-all;text-decoration:none;display:block;margin-bottom:12px;line-height:1.5}
+.result-actions{display:flex;gap:8px;flex-wrap:wrap}
+.qr-mini img{border-radius:var(--r2);border:1.5px solid rgba(255,255,255,.1)}
+@media(max-width:600px){
+  .qr-result{flex-direction:column}
+  .qr-img-col{border-right:none;border-bottom:0.5px solid var(--bdr);padding:1.25rem}
+  .btn-gen{padding:11px 13px;font-size:12px}
+  .header h1{font-size:18px}
+  .app{padding:1.25rem}
+}
+@media(min-width:900px){
+  .app{padding:2rem}
+  .header h1{font-size:26px}
+  .inp{font-size:15px}
+  .qr-img-col{padding:2rem}
+  .qr-info-col{padding:1.75rem;justify-content:center}
+}
+</style>
+
+<div class="app">
+  <div class="header">
+    <h1>QR & Link Tools</h1>
+    <p>Generate QR code · Persingkat link — cepat &amp; gratis</p>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="sw('qr',this)">⬛ QR Generator</button>
+    <button class="tab" onclick="sw('short',this)">🔗 Link Shortener</button>
+  </div>
+
+  <div id="qr" class="panel active">
+    <div class="field-label">URL atau Teks</div>
+    <div class="input-row">
+      <input class="inp" id="qi" placeholder="https://contoh.com" oninput="resetQR()"/>
+      <button class="btn-gen" onclick="genQR()">Generate ↗</button>
+    </div>
+    <div class="field-label">Ukuran QR</div>
+    <div class="size-track">
+      <input type="range" min="120" max="400" step="40" value="200" id="qs" oninput="document.getElementById('szv').textContent=this.value+'px';resetQR()"/>
+      <div class="size-badge" id="szv">200px</div>
+    </div>
+    <div class="qr-stage" id="qr-stage">
+      <div class="qr-empty">
+        <div class="ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,.5)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="5" y="5" width="3" height="3" fill="rgba(148,163,184,.5)" stroke="none"/><rect x="16" y="5" width="3" height="3" fill="rgba(148,163,184,.5)" stroke="none"/><rect x="5" y="16" width="3" height="3" fill="rgba(148,163,184,.5)" stroke="none"/></svg>
+        </div>
+        <span>QR code muncul di sini</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="short" class="panel">
+    <div class="field-label">Paste URL panjang kamu</div>
+    <div class="input-row">
+      <input class="inp" id="url" placeholder="Paste your long URL here"/>
+      <button class="btn-gen" onclick="shorten()">Shorten ↗</button>
+    </div>
+    <div id="result"></div>
+  </div>
+</div>
+
+<script>
+function sw(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+function resetQR(){
+  document.getElementById('qr-stage').innerHTML=`<div class="qr-empty"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,.5)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="5" y="5" width="3" height="3" fill="rgba(148,163,184,.5)" stroke="none"/><rect x="16" y="5" width="3" height="3" fill="rgba(148,163,184,.5)" stroke="none"/><rect x="5" y="16" width="3" height="3" fill="rgba(148,163,184,.5)" stroke="none"/></svg></div><span>QR code muncul di sini</span></div>`;
+}
+function genQR(){
+  var val=document.getElementById('qi').value.trim();
+  var sz=parseInt(document.getElementById('qs').value);
+  if(!val){document.getElementById('qi').focus();return;}
+  var enc=encodeURIComponent(val);
+  var imgUrl=`https://api.qrserver.com/v1/create-qr-code/?size=${sz}x${sz}&data=${enc}&bgcolor=1a1040&color=a5b4fc&margin=14`;
+  var disp=Math.min(sz,220);
+  document.getElementById('qr-stage').innerHTML=`
+    <div class="qr-result">
+      <div class="qr-img-col"><img src="${imgUrl}" width="${disp}" height="${disp}" alt="QR"/></div>
+      <div class="qr-info-col">
+        <div><div class="field-label">Target URL</div><div class="qr-url-text">${val}</div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2)"><span>Resolusi</span><span style="color:var(--txt);font-weight:500">${sz}×${sz}px</span></div>
+        <div class="divider"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <a class="btn-sm" href="${imgUrl}" download="qrcode.png" target="_blank">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Unduh PNG
+          </a>
+          <button class="btn-sm" onclick="cp('${imgUrl}')">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Salin URL
+          </button>
+        </div>
+        <div class="badge-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Siap digunakan</div>
+      </div>
+    </div>`;
+}
+
+function randomCode(length){
+  const chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+  let out="";
+  for(let i=0;i<length;i++){out+=chars[Math.floor(Math.random()*chars.length)]}
+  return out;
+}
+
+function shorten(){
+  let url=document.getElementById("url").value;
+  if(!url){alert("Masukkan URL dulu");return;}
+  let code=randomCode(6);
+  let shortLink=location.origin+"/#"+code;
+  let qUrl=`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(shortLink)}&margin=6&bgcolor=1a1040&color=a5b4fc`;
+  document.getElementById("result").innerHTML=`
+    <div class="result-box">
+      <div class="result-label">Short Link</div>
+      <a class="result-link" href="${url}" target="_blank">${shortLink}</a>
+      <div class="result-actions">
+        <button class="btn-sm" onclick="cp('${shortLink}')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Salin
+        </button>
+        <a class="btn-sm" href="${url}" target="_blank">Buka ↗</a>
+        <div class="qr-mini" style="margin-left:auto">
+          <img src="${qUrl}" width="52" height="52"/>
+        </div>
+      </div>
+    </div>`;
+}
+
+function cp(txt){
+  navigator.clipboard.writeText(txt).then(()=>toast('Disalin!')).catch(()=>toast('Gagal'));
+}
+function toast(msg){
+  var t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:9px 20px;border-radius:20px;font-size:13px;z-index:999;font-family:"DM Sans",sans-serif;box-shadow:0 4px 16px rgba(99,102,241,.4);pointer-events:none';
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},1800);
+}
+</script>
