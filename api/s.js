@@ -24,22 +24,50 @@ module.exports = function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.setHeader('Content-Type', 'application/javascript');
 
+  // SEMUA fungsi yang dipanggil dari HTML onclick/oninput
+  // WAJIB pakai window.nama = function() {} supaya masuk global scope
+  // new Function(code) berjalan di scope tersendiri, bukan global
   const code = `
-/* ── TAB SWITCHER ─────────────────────────────────────────── */
-function sw(id, el) {
-  document.querySelectorAll('.panel').forEach(function(p) {
-    p.classList.remove('active');
-    setTimeout(function() { if (!p.classList.contains('active')) p.style.display = 'none'; }, 300);
+(function() {
+
+/* ── TOAST ─────────────────────────────────────────────────── */
+function _toast(msg, isErr) {
+  var ex = document.querySelector('.toast');
+  if (ex) ex.remove();
+  var t = document.createElement('div');
+  t.className   = 'toast' + (isErr ? ' err' : '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(function() {
+    setTimeout(function() { t.classList.add('show'); }, 10);
+    setTimeout(function() {
+      t.classList.remove('show');
+      setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 300);
+    }, 2200);
   });
-  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-  var panel = document.getElementById(id);
-  panel.style.display = 'block';
-  setTimeout(function() { panel.classList.add('active'); }, 10);
-  el.classList.add('active');
 }
 
-/* ── QR GENERATOR ─────────────────────────────────────────── */
-var QR_EMPTY = '<div class="qr-empty">'
+/* ── COPY ──────────────────────────────────────────────────── */
+function _cp(txt) {
+  function ok() { _toast('Disalin ke clipboard!'); }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(txt).then(ok).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      ok();
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    ok();
+  }
+}
+
+/* ── QR EMPTY STATE ─────────────────────────────────────────── */
+var QR_EMPTY =
+  '<div class="qr-empty">'
   + '<div class="ico">'
   + '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,0.5)" stroke-width="1.5">'
   + '<rect x="3" y="3" width="7" height="7" rx="1.5"/>'
@@ -50,17 +78,36 @@ var QR_EMPTY = '<div class="qr-empty">'
   + '<span>Masukkan URL lalu klik Buat QR</span>'
   + '</div>';
 
+/* ── EXPOSE KE WINDOW — dipanggil dari HTML onclick/oninput ── */
+
+// Tab switcher
+window.sw = function(id, el) {
+  document.querySelectorAll('.panel').forEach(function(p) {
+    p.classList.remove('active');
+    setTimeout(function() {
+      if (!p.classList.contains('active')) p.style.display = 'none';
+    }, 300);
+  });
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  var panel = document.getElementById(id);
+  panel.style.display = 'block';
+  setTimeout(function() { panel.classList.add('active'); }, 10);
+  el.classList.add('active');
+};
+
+// Reset QR stage
 window.resetQR = function() {
   document.getElementById('qr-stage').innerHTML = QR_EMPTY;
 };
 
+// Generate QR
 window.genQR = function() {
   var val = document.getElementById('qi').value.trim();
   var sz  = parseInt(document.getElementById('qs').value);
   var btn = document.getElementById('genBtn');
-  if (!val) { document.getElementById('qi').focus(); toast('Masukkan URL terlebih dahulu!', true); return; }
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span>Membuat...';
+  if (!val) { document.getElementById('qi').focus(); _toast('Masukkan URL terlebih dahulu!', true); return; }
+  btn.disabled    = true;
+  btn.innerHTML   = '<span class="spin"></span>Membuat...';
 
   var enc    = encodeURIComponent(val);
   var imgUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=' + sz + 'x' + sz
@@ -78,31 +125,33 @@ window.genQR = function() {
       + '<div class="qr-info-col">'
         + '<div><div class="field-label">URL Target</div><div class="qr-url-text">' + val + '</div></div>'
         + '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2)">'
-          + '<span>Resolusi</span>'
-          + '<span style="color:var(--txt);font-weight:600">' + sz + '\xd7' + sz + 'px</span>'
+          + '<span>Resolusi</span><span style="color:var(--txt);font-weight:600">' + sz + '\xd7' + sz + 'px</span>'
         + '</div>'
         + '<div class="divider"></div>'
         + '<div style="display:flex;flex-wrap:wrap;gap:8px">'
           + '<a class="btn-sm" href="' + imgUrl + '" download="qrcode.png" target="_blank">' + dlIco + 'Unduh PNG</a>'
-          + '<button class="btn-sm" onclick="cp(\'' + imgUrl + '\')">' + cpIco + 'Salin URL Gambar</button>'
+          + '<button class="btn-sm" onclick="cp(\'' + imgUrl.replace(/'/g,"\\'") + '\')">' + cpIco + 'Salin URL Gambar</button>'
         + '</div>'
         + '<div class="badge-ok">' + okIco + 'QR siap digunakan</div>'
       + '</div></div>';
     btn.disabled    = false;
     btn.textContent = 'Buat QR \u2197';
-    toast('QR Code berhasil dibuat!');
+    _toast('QR Code berhasil dibuat!');
   }, 600);
 };
 
-/* ── LINK SHORTENER (server-side via /api/shorten) ────────── */
-window.shorten = function() {
-  var url    = document.getElementById('url').value.trim();
-  var btn    = document.getElementById('shortBtn');
-  var resEl  = document.getElementById('result');
+// Copy (dipanggil dari inline onclick di HTML hasil generate)
+window.cp = function(txt) { _cp(txt); };
 
-  if (!url) { toast('Tempel URL terlebih dahulu!', true); document.getElementById('url').focus(); return; }
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    toast('URL harus diawali http:// atau https://', true); return;
+// Link shortener
+window.shorten = function() {
+  var url   = document.getElementById('url').value.trim();
+  var btn   = document.getElementById('shortBtn');
+  var resEl = document.getElementById('result');
+
+  if (!url) { _toast('Tempel URL terlebih dahulu!', true); document.getElementById('url').focus(); return; }
+  if (url.indexOf('http://') !== 0 && url.indexOf('https://') !== 0) {
+    _toast('URL harus diawali http:// atau https://', true); return;
   }
 
   btn.disabled    = true;
@@ -118,7 +167,7 @@ window.shorten = function() {
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    if (data.error) { toast(data.error, true); return; }
+    if (data.error) { _toast(data.error, true); return; }
     var short = data.short;
     var qUrl  = 'https://api.qrserver.com/v1/create-qr-code/?size=80x80&data='
               + encodeURIComponent(short) + '&margin=8&bgcolor=110926&color=c7d2fe';
@@ -127,51 +176,27 @@ window.shorten = function() {
       + '<div class="result-label">Tautan Pendek</div>'
       + '<a class="result-link" href="' + short + '" target="_blank">' + short + '</a>'
       + '<div class="result-actions">'
-        + '<button class="btn-sm" onclick="cp(\'' + short + '\')">' + cpIco + 'Salin</button>'
+        + '<button class="btn-sm" onclick="cp(\'' + short.replace(/'/g,"\\'") + '\')">' + cpIco + 'Salin</button>'
         + '<a class="btn-sm" href="' + short + '" target="_blank">Buka \u2197</a>'
         + '<div class="qr-mini" style="margin-left:auto"><img src="' + qUrl + '" width="56" height="56" alt="QR"/></div>'
       + '</div>'
       + '</div>';
-    toast('Tautan berhasil dipersingkat!');
+    _toast('Tautan berhasil dipersingkat!');
   })
-  .catch(function() { toast('Gagal terhubung. Periksa koneksi internet.', true); })
+  .catch(function() { _toast('Gagal terhubung. Periksa koneksi internet.', true); })
   .finally(function() {
     btn.disabled    = false;
     btn.textContent = 'Persingkat \u2197';
   });
 };
 
-/* ── COPY ──────────────────────────────────────────────────── */
-window.cp = function(txt) {
-  function ok() { toast('Disalin ke clipboard!'); }
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(txt).then(ok).catch(function() { fallbackCopy(txt); });
-  } else { fallbackCopy(txt); }
-};
+// Aktifkan tombol setelah script berhasil dimuat
+document.querySelectorAll('.btn-gen').forEach(function(b) {
+  b.disabled = false;
+  b.style.opacity = '1';
+});
 
-function fallbackCopy(txt) {
-  var ta = document.createElement('textarea');
-  ta.value = txt; document.body.appendChild(ta);
-  ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-  toast('Disalin ke clipboard!');
-}
-
-/* ── TOAST ─────────────────────────────────────────────────── */
-function toast(msg, isErr) {
-  var ex = document.querySelector('.toast');
-  if (ex) ex.remove();
-  var t = document.createElement('div');
-  t.className   = 'toast' + (isErr ? ' err' : '');
-  t.textContent = msg;
-  document.body.appendChild(t);
-  requestAnimationFrame(function() {
-    setTimeout(function() { t.classList.add('show'); }, 10);
-    setTimeout(function() {
-      t.classList.remove('show');
-      setTimeout(function() { t.remove(); }, 300);
-    }, 2200);
-  });
-}
+})();
 `.trim();
 
   return res.status(200).send(code);
