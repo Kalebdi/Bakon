@@ -1,0 +1,8 @@
+{
+  "outputDirectory": "public",
+  "functions": {
+    "api/token.js":   { "memory": 128, "maxDuration": 5 },
+    "api/s.js":       { "memory": 128, "maxDuration": 5 },
+    "api/shorten.js": { "memory": 128, "maxDuration": 10 }
+  }
+}
