@@ -1,6 +1,4 @@
-// api/s.js — CommonJS
-// Logic dibaca dari _logic.js pakai fs.readFileSync
-// → tidak ada escaping issue sama sekali
+
 const crypto = require('crypto');
 const fs     = require('fs');
 const path   = require('path');
