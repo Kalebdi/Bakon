@@ -2,351 +2,501 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>SOLITOOLS</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --g1:#6366f1;--g2:#8b5cf6;--g3:#06b6d4;
-  --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);--card3:rgba(255,255,255,0.12);
-  --bdr:rgba(255,255,255,0.08);--bdr2:rgba(255,255,255,0.16);--bdr3:rgba(255,255,255,0.24);
-  --txt:#f8fafc;--txt2:#94a3b8;--txt3:#64748b;--txt4:#475569;
-  --r:20px;--r2:14px;  /* ← RADIUS BESAR */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* ── BODY & APP BESAR ────────────────────────────────────── */
-body{font-family:'DM Sans',Arial,sans-serif;background:#080614;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:40px 20px 80px}  /* ← CENTER VERT + PADDING BESAR */
-.app{
-  background:linear-gradient(135deg,#0a0718 0%,#110926 35%,#0d1221 100%);
-  border-radius:var(--r);
-  padding:2.5rem;  /* ← PADDING BESAR */
-  width:100%;
-  max-width:700px;  /* ← LEBIH LELET */
-  min-height:650px; /* ← TINGGI BESAR */
-  position:relative;
-  overflow:hidden;
-  box-shadow:0 20px 60px rgba(0,0,0,0.7);  /* ← SHADOW BESAR */
+:root {
+  --g1: #6366f1;
+  --g2: #8b5cf6;
+  --g3: #06b6d4;
+  --glass-bg: rgba(10, 8, 25, 0.65);
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-hover: rgba(255, 255, 255, 0.07);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(99, 102, 241, 0.5);
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e6;
+  --text-muted: #7e8aa8;
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --shadow-heavy: 0 25px 45px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.02);
+  --shadow-glow: 0 8px 20px rgba(99, 102, 241, 0.25);
 }
 
-/* ── GRADIENT BLOBS BESAR ────────────────────────────────── */
-.app::before{
-  content:'';
-  position:absolute;
-  top:-120px;right:-120px;
-  width:400px;height:400px;  /* ← BESAR */
-  background:radial-gradient(circle,rgba(99,102,241,0.25) 0%,transparent 70%);
-  pointer-events:none;
-  filter:blur(50px);
-  animation:float 8s ease-in-out infinite
-}
-.app::after{
-  content:'';
-  position:absolute;
-  bottom:-100px;left:-100px;
-  width:320px;height:320px;
-  background:radial-gradient(circle,rgba(6,182,212,0.2) 0%,transparent 70%);
-  pointer-events:none;
-  filter:blur(50px);
-  animation:float 10s ease-in-out infinite reverse
-}
-@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(25px,-25px) scale(1.05)}}
-
-/* ── HEADER BESAR ────────────────────────────────────────── */
-.header{margin-bottom:2rem;position:relative;z-index:2}
-.header h1{
-  font-family:'Syne',sans-serif;
-  font-size:32px;  /* ← BESAR */
-  font-weight:800;
-  background:linear-gradient(135deg,#c7d2fe 0%,#a5f3fc 50%,#c7d2fe 100%);
-  background-size:200% auto;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  letter-spacing:-0.02em;
-  animation:shimmer 4s linear infinite;
-  text-align:center;  /* ← CENTER */
-  margin-bottom:8px;
-}
-@keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
-.header p{
-  font-size:16px;  /* ← BESAR */
-  color:var(--txt2);
-  text-align:center;
-  font-weight:500;
+body {
+  background: radial-gradient(circle at 20% 30%, #0c0a2a, #02010a);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
 }
 
-/* ── TABS BESAR ──────────────────────────────────────────── */
-.tabs{
-  display:flex;
-  gap:8px;
-  margin-bottom:2rem;
-  background:var(--card2);
-  padding:8px;
-  border-radius:var(--r);
-  border:1px solid var(--bdr2);
-  position:relative;
-  z-index:2;
-}
-.tab{
-  flex:1;
-  padding:14px 20px;  /* ← BESAR */
-  border:none;
-  border-radius:var(--r2);
-  background:transparent;
-  cursor:pointer;
-  font-size:15px;  /* ← BESAR */
-  font-weight:600;
-  color:var(--txt2);
-  transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
-  font-family:'DM Sans',sans-serif;
-  position:relative;
-  overflow:hidden;
-}
-.tab::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,var(--g1),var(--g2));
-  opacity:0;
-  transition:opacity 0.25s;
-  border-radius:var(--r2)
-}
-.tab.active{color:#fff;box-shadow:0 4px 20px rgba(99,102,241,0.4)}
-.tab.active::before{opacity:1}
-.tab:hover:not(.active){color:var(--txt);background:var(--card3)}
-
-/* ── INPUT & BUTTON BESAR ────────────────────────────────── */
-.field-label{
-  font-size:13px;  /* ← BESAR */
-  font-weight:700;
-  color:var(--txt2);
-  text-transform:uppercase;
-  letter-spacing:1.2px;
-  margin-bottom:12px;
-  font-family:'Syne',sans-serif;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.field-label::before{
-  content:'';
-  width:10px;height:10px;  /* ← BESAR */
-  background:linear-gradient(135deg,var(--g1),var(--g3));
-  border-radius:3px;
-  flex-shrink:0
-}
-.input-row{display:flex;gap:12px;margin-bottom:20px;align-items:end}  /* ← GAP BESAR */
-.inp{
-  flex:1;
-  padding:18px 20px;  /* ← BESAR */
-  border:2px solid var(--bdr2);  /* ← BORDER TEBAL */
-  border-radius:var(--r2);
-  background:var(--card2);
-  color:var(--txt);
-  font-size:16px;  /* ← BESAR */
-  font-family:'DM Sans',sans-serif;
-  outline:none;
-  transition:all 0.2s ease;
-  min-height:56px;  /* ← TINGGI FIXED */
-}
-.inp:focus{
-  border-color:var(--g1);
-  background:var(--card3);
-  box-shadow:0 0 0 4px rgba(99,102,241,0.15),0 0 30px rgba(99,102,241,0.2)
-}
-.inp::placeholder{color:var(--txt4)}
-.btn-gen{
-  padding:18px 28px;  /* ← BESAR */
-  border:none;
-  border-radius:var(--r2);
-  background:linear-gradient(135deg,var(--g1),var(--g2));
-  color:#fff;
-  font-size:15px;  /* ← BESAR */
-  font-weight:700;
-  cursor:pointer;
-  font-family:'Syne',sans-serif;
-  letter-spacing:0.5px;
-  transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
-  white-space:nowrap;
-  box-shadow:0 8px 25px rgba(99,102,241,0.4);
-  min-height:56px;  /* ← TINGGI SAMA INPUT */
-  flex-shrink:0;
-}
-.btn-gen:hover{
-  transform:translateY(-3px);
-  box-shadow:0 12px 35px rgba(99,102,241,0.5)
-}
-.btn-gen:active{transform:translateY(-1px) scale(0.98)}
-
-/* ── QR 400px GIGANTIC + CENTER ─────────────────────────── */
-.qr-stage{
-  border:2px solid var(--bdr2);  /* ← BORDER TEBAL */
-  border-radius:var(--r);
-  overflow:hidden;
-  background:var(--card);
-  transition:all 0.3s ease;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  min-height:450px !important;  /* ← SUPER TINGGI */
-  margin-top:20px;
+/* Main app card */
+.app {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 780px;
+  padding: 2rem 2rem 2.5rem;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-heavy);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-.qr-img-col{
-  padding:2.5rem;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  justify-content:center !important;
-  background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(6,182,212,0.08));
-  border-right:2px solid var(--bdr2);
-  min-height:450px !important;
-  flex:0 0 420px !important;  /* ← LEBAR BUAT 400px */
+/* Decorative blobs */
+.app::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35), transparent 70%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatBlob 12s infinite alternate;
 }
 
-.qr-img-col img{
-  display:block !important;
-  margin:0 auto !important;
-  max-width:400px !important;  /* ← MAX 400px */
-  max-height:400px !important;
-  width:auto !important;
-  height:auto !important;
-  object-fit:contain !important;
-  border-radius:var(--r2);
-  border:10px solid rgba(255,255,255,0.2) !important;  /* ← BORDER PREMIUM */
-  box-shadow:0 25px 60px rgba(0,0,0,0.5) !important;
-  transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
-  image-rendering:-webkit-optimize-contrast;
-  image-rendering:crisp-edges;
+.app::after {
+  content: '';
+  position: absolute;
+  bottom: -100px;
+  left: -80px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.25), transparent 70%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatBlob2 10s infinite alternate;
 }
 
-.qr-img-col img:hover{
-  transform:scale(1.03) !important;
-  box-shadow:0 35px 80px rgba(0,0,0,0.6) !important;
+@keyframes floatBlob {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  100% { transform: translate(30px, -20px) scale(1.15); opacity: 0.8; }
 }
 
-/* ── SLIDER BESAR ────────────────────────────────────────── */
-.size-track{display:flex;align-items:center;gap:16px;margin:24px 0 20px}
-.size-track input[type="range"]{
-  flex:1;
-  -webkit-appearance:none;
-  height:8px;  /* ← TEBAL */
-  background:linear-gradient(90deg,var(--g1),var(--g3));
-  border-radius:5px;
-  outline:none;
-  cursor:pointer;
-}
-.size-track input[type="range"]::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:24px;  /* ← BESAR */
-  height:24px;
-  border-radius:50%;
-  background:#fff;
-  box-shadow:0 0 0 6px rgba(99,102,241,0.4),0 4px 12px rgba(0,0,0,0.4);
-  cursor:pointer;
-  transition:transform 0.2s
-}
-.size-badge{
-  font-size:14px;  /* ← BESAR */
-  font-weight:700;
-  color:var(--txt);
-  background:linear-gradient(135deg,rgba(99,102,241,0.3),rgba(139,92,246,0.3));
-  border:2px solid rgba(99,102,241,0.5);
-  padding:10px 18px;  /* ← BESAR */
-  border-radius:25px;
-  min-width:80px;
-  text-align:center;
-  font-family:'Syne',sans-serif;
-  box-shadow:0 4px 15px rgba(99,102,241,0.3)
+@keyframes floatBlob2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-20px, 30px) scale(1.2); }
 }
 
-/* ── MOBILE SUPER RESPONSIVE ────────────────────────────── */
-@media(max-width:768px){
-  body{padding:20px 16px 60px !important}
-  .app{
-    padding:2rem 1.5rem !important;
-    max-width:100% !important;
-    min-height:100vh !important;
-    border-radius:24px !important;
-    margin:0 !important;
+/* Header */
+.header {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e0e7ff, #a5f3fc, #c084fc);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.header p {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  padding: 6px;
+  border-radius: 60px;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-subtle);
+  position: relative;
+  z-index: 2;
+}
+
+.tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-family: 'Syne', sans-serif;
+  color: var(--text-muted);
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tab span {
+  font-size: 1rem;
+}
+
+.tab.active {
+  background: linear-gradient(115deg, var(--g1), var(--g2));
+  color: white;
+  box-shadow: var(--shadow-glow);
+}
+
+.tab:not(.active):hover {
+  background: var(--card-hover);
+  color: var(--text-primary);
+}
+
+/* Panels */
+.panel {
+  display: none;
+  animation: fadeSlideUp 0.3s ease forwards;
+  position: relative;
+  z-index: 2;
+}
+
+.panel.active {
+  display: block;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
-  .header h1{font-size:28px !important;line-height:1.2 !important}
-  .header p{font-size:15px !important}
-  .input-row{flex-direction:column !important;gap:16px !important}
-  .inp{
-    padding:20px !important;
-    font-size:18px !important;
-    min-height:64px !important;
-  }
-  .btn-gen{
-    padding:20px !important;
-    font-size:16px !important;
-    min-height:64px !important;
-  }
-  .tabs{padding:10px !important}
-  .tab{padding:16px 20px !important;font-size:15px !important}
-  
-  /* MOBILE QR GIGANTIC */
-  .qr-result{flex-direction:column !important;gap:24px !important}
-  .qr-img-col{
-    border-right:none !important;
-    border-bottom:2px solid var(--bdr2) !important;
-    padding:32px 20px !important;
-    flex:none !important;
-    min-height:450px !important;
-  }
-  .qr-img-col img{
-    max-width:95vw !important;
-    max-height:400px !important;
-    border:8px solid rgba(255,255,255,0.25) !important;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media(min-width:1200px){
-  .app{max-width:800px !important;padding:3rem !important}
-  .header h1{font-size:36px !important}
-  .qr-img-col{padding:3rem !important;flex:0 0 450px !important}
+/* Field labels */
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  font-family: 'Syne', sans-serif;
 }
 
-/* ── LAINNYA (toast, spin, dll) ─────────────────────────── */
-.panel{transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
-.toast{
-  position:fixed;
-  bottom:32px;
-  left:50%;
-  transform:translateX(-50%) translateY(20px);
-  background:linear-gradient(135deg,var(--g1),var(--g2));
-  color:#fff;
-  padding:16px 32px;  /* ← BESAR */
-  border-radius:30px;
-  font-size:15px;  /* ← BESAR */
-  font-weight:600;
-  z-index:9999;
-  box-shadow:0 15px 40px rgba(99,102,241,0.5);
-  opacity:0;
-  transition:all 0.4s;
-  pointer-events:none
+.field-label::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(145deg, var(--g1), var(--g3));
+  border-radius: 2px;
+  display: inline-block;
 }
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c)}
-.spin{
-  display:inline-block;
-  width:20px;height:20px;  /* ← BESAR */
-  border:3px solid rgba(255,255,255,0.3);
-  border-top-color:#fff;
-  border-radius:50%;
-  animation:spin 0.7s linear infinite;
-  vertical-align:middle;
-  margin-right:8px
+
+/* Input row */
+.input-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
+
+.inp {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.2rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.inp:focus {
+  outline: none;
+  border-color: var(--g1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  background: rgba(15, 20, 40, 0.7);
+}
+
+.inp::placeholder {
+  color: #5e6c8c;
+  font-weight: 400;
+}
+
+.btn-gen {
+  background: linear-gradient(105deg, var(--g1), var(--g2));
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0 1.8rem;
+  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-glow);
+  white-space: nowrap;
+}
+
+.btn-gen:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(99, 102, 241, 0.4);
+  filter: brightness(1.02);
+}
+
+.btn-gen:active {
+  transform: scale(0.97);
+}
+
+/* Size slider */
+.size-track {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0 28px;
+}
+
+.size-track input[type="range"] {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  background: linear-gradient(90deg, var(--g1), var(--g3));
+  border-radius: 10px;
+}
+
+.size-track input[type="range"]:focus {
+  outline: none;
+}
+
+.size-track input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4), 0 2px 8px black;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.size-badge {
+  background: rgba(99, 102, 241, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 8px 18px;
+  border-radius: 40px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: white;
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  font-family: monospace;
+  min-width: 85px;
+  text-align: center;
+}
+
+/* QR stage */
+.qr-stage {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  min-height: 450px;
+  text-align: center;
+}
+
+.qr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+
+.qr-empty svg {
+  opacity: 0.6;
+  margin-bottom: 0.5rem;
+}
+
+/* Shortener result */
+#result {
+  margin-top: 1.5rem;
+}
+
+.short-result-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(6, 182, 212, 0.05));
+  border-radius: var(--radius-md);
+  padding: 1.2rem;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s;
+}
+
+.short-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 60px;
+  padding: 8px 8px 8px 20px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border-subtle);
+}
+
+.short-link {
+  font-family: monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+  color: #a5f3fc;
+  font-weight: 500;
+}
+
+.copy-btn {
+  background: var(--g1);
+  border: none;
+  border-radius: 40px;
+  padding: 6px 16px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.copy-btn:hover {
+  background: var(--g2);
+  transform: scale(0.97);
+}
+
+.original-url {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  word-break: break-all;
+  padding-left: 8px;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  background: #1e293b;
+  backdrop-filter: blur(20px);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 60px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.25s ease;
+  pointer-events: none;
+  border-left: 4px solid var(--g1);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.err {
+  background: #991b1b;
+  border-left-color: #f97316;
+}
+
+/* Responsive */
+@media (max-width: 680px) {
+  .app {
+    padding: 1.5rem;
+  }
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  .input-row {
+    flex-direction: column;
+  }
+  .btn-gen {
+    padding: 1rem;
+    justify-content: center;
+  }
+  .size-track {
+    gap: 12px;
+  }
+  .qr-stage {
+    padding: 1rem;
+    min-height: 380px;
+  }
+  .tab span {
+    font-size: 0.85rem;
+  }
+  .short-link-row {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: var(--radius-md);
+    padding: 12px;
+  }
+  .copy-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .qr-stage img {
+    max-width: 90vw;
+    height: auto;
+  }
+}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <h1>QR & Link Tools</h1>
-    <p>Buat QR code &amp; persingkat tautan — gratis, cepat, instan</p>
+    <h1>SOLITOOLS</h1>
+    <p>QR code &amp; persingkat tautan — gratis, cepat, instan</p>
   </div>
 
   <div class="tabs">
@@ -357,25 +507,23 @@ body{font-family:'DM Sans',Arial,sans-serif;background:#080614;min-height:100vh;
   <div id="qr" class="panel active">
     <div class="field-label">URL atau Teks</div>
     <div class="input-row">
-      <input class="inp" id="qi" placeholder="https://contoh.com" oninput="resetQR&&resetQR()"/>
+      <input class="inp" id="qi" placeholder="https://contoh.com" oninput="resetQR&&resetQR()">
       <button class="btn-gen" id="genBtn" onclick="genQR&&genQR()">Buat QR ↗</button>
     </div>
     <div class="field-label">Ukuran QR</div>
     <div class="size-track">
       <input type="range" min="120" max="400" step="40" value="200" id="qs"
-             oninput="document.getElementById('szv').textContent=this.value+'px';resetQR&&resetQR()"/>
+             oninput="document.getElementById('szv').textContent=this.value+'px';resetQR&&resetQR()">
       <div class="size-badge" id="szv">200px</div>
     </div>
     <div class="qr-stage" id="qr-stage">
       <div class="qr-empty">
-        <div class="ico">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,0.5)" stroke-width="1.5">
-            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-            <circle cx="17.5" cy="17.5" r="2.5" fill="rgba(148,163,184,0.3)" stroke="none"/>
-          </svg>
-        </div>
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="3" y="3" width="7" height="7" rx="1.5" />
+          <rect x="14" y="3" width="7" height="7" rx="1.5" />
+          <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          <circle cx="17.5" cy="17.5" r="2.5" fill="none" stroke="currentColor" />
+        </svg>
         <span>Masukkan URL lalu klik Buat QR</span>
       </div>
     </div>
@@ -384,7 +532,7 @@ body{font-family:'DM Sans',Arial,sans-serif;background:#080614;min-height:100vh;
   <div id="short" class="panel">
     <div class="field-label">Tempel URL Panjang</div>
     <div class="input-row">
-      <input class="inp" id="url" placeholder="https://tautan-sangat-panjang.com/path/..."/>
+      <input class="inp" id="url" placeholder="https://tautan-sangat-panjang.com/path/...">
       <button class="btn-gen" id="shortBtn" onclick="shorten&&shorten()">Persingkat ↗</button>
     </div>
     <div id="result"></div>
@@ -392,8 +540,7 @@ body{font-family:'DM Sans',Arial,sans-serif;background:#080614;min-height:100vh;
 </div>
 
 <script>
-// ── TAB SWITCHER — taruh di sini karena dipanggil langsung saat klik ──
-// Tidak sensitif, tidak perlu disembunyikan
+// ── TAB SWITCHER (tidak diubah) ──
 function sw(id, el) {
   document.querySelectorAll('.panel').forEach(function(p) {
     p.classList.remove('active');
@@ -408,8 +555,7 @@ function sw(id, el) {
   el.classList.add('active');
 }
 
-// ── LOAD LOGIC DARI API ─────────────────────────────────────
-// genQR, shorten, cp, resetQR dimuat dari /api/s via HMAC token
+// ── LOAD LOGIC DARI API (tetap sama) ──
 (function(){
   function showErr(msg) {
     console.error('[QRTools]', msg);
@@ -423,7 +569,6 @@ function sw(id, el) {
     });
   }
 
-  // Step 1: ambil token
   fetch('/api/token')
     .then(function(r) {
       if (!r.ok) { showErr('Gagal ambil token (' + r.status + '). Cek APP_SECRET di Vercel.'); return null; }
@@ -431,7 +576,6 @@ function sw(id, el) {
     })
     .then(function(d) {
       if (!d || !d.t) return null;
-      // Step 2: ambil script pakai token
       return fetch('/api/s?t=' + encodeURIComponent(d.t));
     })
     .then(function(r) {
