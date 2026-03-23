@@ -149,25 +149,46 @@ function sw(id, el) {
 // ── LOAD LOGIC DARI API ─────────────────────────────────────
 // genQR, shorten, cp, resetQR dimuat dari /api/s via HMAC token
 (function(){
+  function showErr(msg) {
+    console.error('[QRTools]', msg);
+    var t = document.createElement('div');
+    t.className = 'toast err';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(function(){
+      setTimeout(function(){ t.classList.add('show'); }, 10);
+      setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 300); }, 5000);
+    });
+  }
+
+  // Step 1: ambil token
   fetch('/api/token')
-    .then(function(r){ return r.ok ? r.json() : Promise.reject('token-fail'); })
-    .then(function(d){
-      if (!d || !d.t) return Promise.reject('no-token');
+    .then(function(r) {
+      if (!r.ok) { showErr('Gagal ambil token (' + r.status + '). Cek APP_SECRET di Vercel.'); return null; }
+      return r.json();
+    })
+    .then(function(d) {
+      if (!d || !d.t) return null;
+      // Step 2: ambil script pakai token
       return fetch('/api/s?t=' + encodeURIComponent(d.t));
     })
-    .then(function(r){ return r && r.ok ? r.text() : Promise.reject('script-fail'); })
-    .then(function(code){ if (code) (new Function(code))(); })
-    .catch(function(e){
-      // Tampilkan error di konsol supaya mudah debug
-      console.error('[QRTools] Gagal memuat script:', e);
-      // Tampilkan toast error ke user
-      var t = document.createElement('div');
-      t.className   = 'toast err show';
-      t.textContent = 'Gagal memuat. Pastikan APP_SECRET sudah diset di Vercel.';
-      t.style.opacity = '1';
-      t.style.transform = 'translateX(-50%) translateY(0)';
-      document.body.appendChild(t);
-      setTimeout(function(){ t.remove(); }, 5000);
+    .then(function(r) {
+      if (!r) return null;
+      if (!r.ok) { showErr('Gagal ambil script (' + r.status + ').'); return null; }
+      return r.text();
+    })
+    .then(function(code) {
+      if (!code) return;
+      try {
+        (new Function(code))();
+        console.log('[QRTools] Script berhasil dimuat. genQR:', typeof window.genQR, '| shorten:', typeof window.shorten);
+      } catch(e) {
+        showErr('Error saat jalankan script: ' + e.message);
+        console.error('[QRTools] Script error:', e);
+      }
+    })
+    .catch(function(e) {
+      showErr('Fetch error: ' + e.message);
     });
 })();
 </script>
