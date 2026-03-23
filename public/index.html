@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR & Link Tools</title>
+<title>SOLITOOLS</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -12,124 +12,175 @@
   --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);--card3:rgba(255,255,255,0.12);
   --bdr:rgba(255,255,255,0.08);--bdr2:rgba(255,255,255,0.16);--bdr3:rgba(255,255,255,0.24);
   --txt:#f8fafc;--txt2:#94a3b8;--txt3:#64748b;--txt4:#475569;
-  --r:16px;--r2:10px;
+  --r:20px;--r2:14px;  /* ← RADIUS BESAR */
 }
 
-/* ── BASE ────────────────────────────────────────────────── */
-body{font-family:'DM Sans',Arial,sans-serif;background:#080614;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:20px 12px 60px}
-.app{background:linear-gradient(135deg,#0a0718 0%,#110926 35%,#0d1221 100%);border-radius:var(--r);padding:1.5rem;width:100%;max-width:520px;min-height:520px;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.6)}
-/* ... gradient effects sama seperti sebelumnya ... */
-.app::before{content:'';position:absolute;top:-100px;right:-100px;width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,0.2) 0%,transparent 70%);pointer-events:none;filter:blur(40px);animation:float 8s ease-in-out infinite}
-.app::after{content:'';position:absolute;bottom:-80px;left:-80px;width:240px;height:240px;background:radial-gradient(circle,rgba(6,182,212,0.15) 0%,transparent 70%);pointer-events:none;filter:blur(40px);animation:float 10s ease-in-out infinite reverse}
-@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-20px) scale(1.05)}}
+/* ── BODY & APP BESAR ────────────────────────────────────── */
+body{font-family:'DM Sans',Arial,sans-serif;background:#080614;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:40px 20px 80px}  /* ← CENTER VERT + PADDING BESAR */
+.app{
+  background:linear-gradient(135deg,#0a0718 0%,#110926 35%,#0d1221 100%);
+  border-radius:var(--r);
+  padding:2.5rem;  /* ← PADDING BESAR */
+  width:100%;
+  max-width:700px;  /* ← LEBIH LELET */
+  min-height:650px; /* ← TINGGI BESAR */
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.7);  /* ← SHADOW BESAR */
+}
 
-/* ── HEADER & TABS (sama) ─────────────────────────────────── */
-.header{margin-bottom:1.75rem;position:relative;z-index:2}
-.header h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(135deg,#c7d2fe 0%,#a5f3fc 50%,#c7d2fe 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;animation:shimmer 4s linear infinite}
+/* ── GRADIENT BLOBS BESAR ────────────────────────────────── */
+.app::before{
+  content:'';
+  position:absolute;
+  top:-120px;right:-120px;
+  width:400px;height:400px;  /* ← BESAR */
+  background:radial-gradient(circle,rgba(99,102,241,0.25) 0%,transparent 70%);
+  pointer-events:none;
+  filter:blur(50px);
+  animation:float 8s ease-in-out infinite
+}
+.app::after{
+  content:'';
+  position:absolute;
+  bottom:-100px;left:-100px;
+  width:320px;height:320px;
+  background:radial-gradient(circle,rgba(6,182,212,0.2) 0%,transparent 70%);
+  pointer-events:none;
+  filter:blur(50px);
+  animation:float 10s ease-in-out infinite reverse
+}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(25px,-25px) scale(1.05)}}
+
+/* ── HEADER BESAR ────────────────────────────────────────── */
+.header{margin-bottom:2rem;position:relative;z-index:2}
+.header h1{
+  font-family:'Syne',sans-serif;
+  font-size:32px;  /* ← BESAR */
+  font-weight:800;
+  background:linear-gradient(135deg,#c7d2fe 0%,#a5f3fc 50%,#c7d2fe 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  letter-spacing:-0.02em;
+  animation:shimmer 4s linear infinite;
+  text-align:center;  /* ← CENTER */
+  margin-bottom:8px;
+}
 @keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
-.header p{font-size:14px;color:var(--txt2);margin-top:6px;font-weight:400}
-.tabs{display:flex;gap:6px;margin-bottom:1.75rem;background:var(--card);padding:5px;border-radius:var(--r);border:0.5px solid var(--bdr);position:relative;z-index:2}
-.tab{flex:1;padding:11px 16px;border:none;border-radius:var(--r2);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--txt2);transition:all 0.25s cubic-bezier(0.4,0,0.2,1);font-family:'DM Sans',sans-serif;position:relative;overflow:hidden}
-.tab::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--g1),var(--g2));opacity:0;transition:opacity 0.25s;border-radius:var(--r2)}
-.tab span{position:relative;z-index:1}
-.tab.active{color:#fff;box-shadow:0 2px 16px rgba(99,102,241,0.35)}
+.header p{
+  font-size:16px;  /* ← BESAR */
+  color:var(--txt2);
+  text-align:center;
+  font-weight:500;
+}
+
+/* ── TABS BESAR ──────────────────────────────────────────── */
+.tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:2rem;
+  background:var(--card2);
+  padding:8px;
+  border-radius:var(--r);
+  border:1px solid var(--bdr2);
+  position:relative;
+  z-index:2;
+}
+.tab{
+  flex:1;
+  padding:14px 20px;  /* ← BESAR */
+  border:none;
+  border-radius:var(--r2);
+  background:transparent;
+  cursor:pointer;
+  font-size:15px;  /* ← BESAR */
+  font-weight:600;
+  color:var(--txt2);
+  transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+  font-family:'DM Sans',sans-serif;
+  position:relative;
+  overflow:hidden;
+}
+.tab::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  opacity:0;
+  transition:opacity 0.25s;
+  border-radius:var(--r2)
+}
+.tab.active{color:#fff;box-shadow:0 4px 20px rgba(99,102,241,0.4)}
 .tab.active::before{opacity:1}
-.tab:hover:not(.active){color:var(--txt);background:var(--card2)}
-.panel{display:none;opacity:0;transform:translateY(10px);transition:opacity 0.3s ease,transform 0.3s ease;position:relative;z-index:2}
-.panel.active{display:block;opacity:1;transform:translateY(0)}
+.tab:hover:not(.active){color:var(--txt);background:var(--card3)}
 
-/* ── FORM ELEMENTS (sama) ─────────────────────────────────── */
-.field-label{font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:6px}
-.field-label::before{content:'';width:8px;height:8px;background:linear-gradient(135deg,var(--g1),var(--g3));border-radius:2px;flex-shrink:0}
-.input-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.inp{flex:1;padding:13px 16px;border:1px solid var(--bdr2);border-radius:var(--r2);background:var(--card2);color:var(--txt);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.2s ease;min-width:0}
-.inp:focus{border-color:var(--g1);background:var(--card3);box-shadow:0 0 0 4px rgba(99,102,241,0.12)}
+/* ── INPUT & BUTTON BESAR ────────────────────────────────── */
+.field-label{
+  font-size:13px;  /* ← BESAR */
+  font-weight:700;
+  color:var(--txt2);
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  margin-bottom:12px;
+  font-family:'Syne',sans-serif;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.field-label::before{
+  content:'';
+  width:10px;height:10px;  /* ← BESAR */
+  background:linear-gradient(135deg,var(--g1),var(--g3));
+  border-radius:3px;
+  flex-shrink:0
+}
+.input-row{display:flex;gap:12px;margin-bottom:20px;align-items:end}  /* ← GAP BESAR */
+.inp{
+  flex:1;
+  padding:18px 20px;  /* ← BESAR */
+  border:2px solid var(--bdr2);  /* ← BORDER TEBAL */
+  border-radius:var(--r2);
+  background:var(--card2);
+  color:var(--txt);
+  font-size:16px;  /* ← BESAR */
+  font-family:'DM Sans',sans-serif;
+  outline:none;
+  transition:all 0.2s ease;
+  min-height:56px;  /* ← TINGGI FIXED */
+}
+.inp:focus{
+  border-color:var(--g1);
+  background:var(--card3);
+  box-shadow:0 0 0 4px rgba(99,102,241,0.15),0 0 30px rgba(99,102,241,0.2)
+}
 .inp::placeholder{color:var(--txt4)}
-.btn-gen{padding:13px 22px;border:none;border-radius:var(--r2);background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;letter-spacing:0.3px;transition:all 0.2s cubic-bezier(0.4,0,0.2,1);white-space:nowrap;box-shadow:0 4px 16px rgba(99,102,241,0.35);flex-shrink:0}
-.btn-gen:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(99,102,241,0.45)}
-.btn-gen:disabled{opacity:0.5;cursor:not-allowed;transform:none}
-
-/* ── MOBILE RESPONSIVE - FIX MENTOK ───────────────────────── */
-@media (max-width: 768px) {
-  body { padding: 12px 8px 40px !important; }
-  .app { 
-    padding: 20px 16px !important; 
-    max-width: 100% !important; 
-    margin: 0 !important;
-    border-radius: 12px !important;
-  }
-  
-  .header h1 { font-size: 22px !important; }
-  .header p { font-size: 13px !important; }
-  
-  /* Input row STACK vertikal */
-  .input-row { 
-    flex-direction: column !important; 
-    gap: 12px !important;
-  }
-  .inp { 
-    font-size: 16px !important; /* Prevent zoom */
-    padding: 16px !important;
-  }
-  .btn-gen { 
-    width: 100% !important; 
-    padding: 16px !important;
-    font-size: 14px !important;
-  }
-  
-  /* QR Result MOBILE */
-  .qr-result { 
-    flex-direction: column !important; 
-    gap: 20px !important;
-    padding: 20px 16px !important;
-  }
-  
-  .qr-img-col { 
-    width: 100% !important; 
-    padding: 20px 16px !important;
-    background: none !important;
-    border: none !important;
-    text-align: center !important;
-  }
-  
-  .qr-img-col img { 
-    max-width: 90vw !important; 
-    max-height: 280px !important;
-    width: auto !important;
-    height: auto !important;
-  }
-  
-  .qr-info-col { 
-    width: 100% !important; 
-    padding: 0 !important;
-  }
-  
-  .size-track { 
-    padding: 0 8px !important;
-  }
-  
-  /* Buttons */
-  .btn-sm { 
-    flex: 1 !important; 
-    min-width: 100px !important;
-    padding: 12px !important;
-    font-size: 13px !important;
-    justify-content: center;
-  }
+.btn-gen{
+  padding:18px 28px;  /* ← BESAR */
+  border:none;
+  border-radius:var(--r2);
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  color:#fff;
+  font-size:15px;  /* ← BESAR */
+  font-weight:700;
+  cursor:pointer;
+  font-family:'Syne',sans-serif;
+  letter-spacing:0.5px;
+  transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+  white-space:nowrap;
+  box-shadow:0 8px 25px rgba(99,102,241,0.4);
+  min-height:56px;  /* ← TINGGI SAMA INPUT */
+  flex-shrink:0;
 }
-
-/* ── DESKTOP ──────────────────────────────────────────────── */
-@media (min-width: 769px) {
-  body { padding: 40px 16px 60px !important; }
-  .app { padding: 2.5rem !important; max-width: 600px !important; }
-  .qr-result { display: flex !important; gap: 24px !important; }
-  .qr-img-col { flex: 0 0 300px !important; padding: 2rem !important; }
+.btn-gen:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 35px rgba(99,102,241,0.5)
 }
+.btn-gen:active{transform:translateY(-1px) scale(0.98)}
 
-/* ── QR RESULT STYLES ─────────────────────────────────────── */
-/* ── QR STAGE & RESULT (400px MAX) ───────────────────────── */
+/* ── QR 400px GIGANTIC + CENTER ─────────────────────────── */
 .qr-stage{
-  border:1px solid var(--bdr);
+  border:2px solid var(--bdr2);  /* ← BORDER TEBAL */
   border-radius:var(--r);
   overflow:hidden;
   background:var(--card);
@@ -137,75 +188,159 @@ body{font-family:'DM Sans',Arial,sans-serif;background:#080614;min-height:100vh;
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
-  min-height:420px !important;
+  min-height:450px !important;  /* ← SUPER TINGGI */
+  margin-top:20px;
 }
 
 .qr-img-col{
-  padding:2rem;
+  padding:2.5rem;
   display:flex !important;
   flex-direction:column !important;
   align-items:center !important;
   justify-content:center !important;
-  background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(6,182,212,0.06));
-  border-right:1px solid var(--bdr);
-  min-height:420px !important;
-  flex:0 0 400px !important;
+  background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(6,182,212,0.08));
+  border-right:2px solid var(--bdr2);
+  min-height:450px !important;
+  flex:0 0 420px !important;  /* ← LEBAR BUAT 400px */
 }
 
 .qr-img-col img{
   display:block !important;
   margin:0 auto !important;
-  max-width:400px !important;
+  max-width:400px !important;  /* ← MAX 400px */
   max-height:400px !important;
   width:auto !important;
   height:auto !important;
   object-fit:contain !important;
   border-radius:var(--r2);
-  border:8px solid rgba(255,255,255,0.15) !important;
-  box-shadow:0 20px 40px rgba(0,0,0,0.4) !important;
-  transition:transform 0.3s ease, box-shadow 0.3s ease;
+  border:10px solid rgba(255,255,255,0.2) !important;  /* ← BORDER PREMIUM */
+  box-shadow:0 25px 60px rgba(0,0,0,0.5) !important;
+  transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
   image-rendering:-webkit-optimize-contrast;
   image-rendering:crisp-edges;
 }
 
 .qr-img-col img:hover{
-  transform:scale(1.02) !important;
-  box-shadow:0 25px 50px rgba(0,0,0,0.5) !important;
+  transform:scale(1.03) !important;
+  box-shadow:0 35px 80px rgba(0,0,0,0.6) !important;
 }
 
-/* SLIDER MAX 400px */
+/* ── SLIDER BESAR ────────────────────────────────────────── */
+.size-track{display:flex;align-items:center;gap:16px;margin:24px 0 20px}
 .size-track input[type="range"]{
   flex:1;
   -webkit-appearance:none;
-  height:5px;
+  height:8px;  /* ← TEBAL */
   background:linear-gradient(90deg,var(--g1),var(--g3));
-  border-radius:3px;
+  border-radius:5px;
   outline:none;
   cursor:pointer;
 }
+.size-track input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:24px;  /* ← BESAR */
+  height:24px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 0 6px rgba(99,102,241,0.4),0 4px 12px rgba(0,0,0,0.4);
+  cursor:pointer;
+  transition:transform 0.2s
+}
+.size-badge{
+  font-size:14px;  /* ← BESAR */
+  font-weight:700;
+  color:var(--txt);
+  background:linear-gradient(135deg,rgba(99,102,241,0.3),rgba(139,92,246,0.3));
+  border:2px solid rgba(99,102,241,0.5);
+  padding:10px 18px;  /* ← BESAR */
+  border-radius:25px;
+  min-width:80px;
+  text-align:center;
+  font-family:'Syne',sans-serif;
+  box-shadow:0 4px 15px rgba(99,102,241,0.3)
+}
 
-/* MOBILE 400px */
-@media(max-width:600px){
+/* ── MOBILE SUPER RESPONSIVE ────────────────────────────── */
+@media(max-width:768px){
+  body{padding:20px 16px 60px !important}
+  .app{
+    padding:2rem 1.5rem !important;
+    max-width:100% !important;
+    min-height:100vh !important;
+    border-radius:24px !important;
+    margin:0 !important;
+  }
+  .header h1{font-size:28px !important;line-height:1.2 !important}
+  .header p{font-size:15px !important}
+  .input-row{flex-direction:column !important;gap:16px !important}
+  .inp{
+    padding:20px !important;
+    font-size:18px !important;
+    min-height:64px !important;
+  }
+  .btn-gen{
+    padding:20px !important;
+    font-size:16px !important;
+    min-height:64px !important;
+  }
+  .tabs{padding:10px !important}
+  .tab{padding:16px 20px !important;font-size:15px !important}
+  
+  /* MOBILE QR GIGANTIC */
+  .qr-result{flex-direction:column !important;gap:24px !important}
   .qr-img-col{
     border-right:none !important;
-    border-bottom:1px solid var(--bdr) !important;
-    padding:24px 12px !important;
+    border-bottom:2px solid var(--bdr2) !important;
+    padding:32px 20px !important;
     flex:none !important;
-    min-height:420px !important;
+    min-height:450px !important;
   }
   .qr-img-col img{
     max-width:95vw !important;
     max-height:400px !important;
-    border:6px solid rgba(255,255,255,0.2) !important;
+    border:8px solid rgba(255,255,255,0.25) !important;
   }
 }
-/* ── LAINNYA (toast, spin, dll - sama seperti sebelumnya) ── */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:12px 24px;border-radius:24px;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 8px 32px rgba(99,102,241,0.4);opacity:0;transition:all 0.3s;pointer-events:none}
+
+@media(min-width:1200px){
+  .app{max-width:800px !important;padding:3rem !important}
+  .header h1{font-size:36px !important}
+  .qr-img-col{padding:3rem !important;flex:0 0 450px !important}
+}
+
+/* ── LAINNYA (toast, spin, dll) ─────────────────────────── */
+.panel{transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
+.toast{
+  position:fixed;
+  bottom:32px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  color:#fff;
+  padding:16px 32px;  /* ← BESAR */
+  border-radius:30px;
+  font-size:15px;  /* ← BESAR */
+  font-weight:600;
+  z-index:9999;
+  box-shadow:0 15px 40px rgba(99,102,241,0.5);
+  opacity:0;
+  transition:all 0.4s;
+  pointer-events:none
+}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c)}
-.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+.spin{
+  display:inline-block;
+  width:20px;height:20px;  /* ← BESAR */
+  border:3px solid rgba(255,255,255,0.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+  vertical-align:middle;
+  margin-right:8px
+}
 @keyframes spin{to{transform:rotate(360deg)}}
-             </style>
+</style>
 </head>
 <body>
 <div class="app">
