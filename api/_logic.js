@@ -70,57 +70,66 @@
     + '<polyline points="20 6 9 17 4 12"/></svg>';
 
   /* ── GENERATE QR ──────────────────────────────────────────── */
-  window.genQR = function () {
-    var val = document.getElementById('qi').value.trim();
-    var sz  = parseInt(document.getElementById('qs').value, 10);
-    var btn = document.getElementById('genBtn');
+/* ── GENERATE QR (KONTRAS OPTIMAL) ────────────────────────── */
+window.genQR = function () {
+  var val = document.getElementById('qi').value.trim();
+  var sz  = parseInt(document.getElementById('qs').value, 10);
+  var btn = document.getElementById('genBtn');
 
-    if (!val) {
-      document.getElementById('qi').focus();
-      toast('Masukkan URL terlebih dahulu!', true);
-      return;
-    }
+  if (!val) {
+    document.getElementById('qi').focus();
+    toast('Masukkan URL terlebih dahulu!', true);
+    return;
+  }
 
-    btn.disabled  = true;
-    btn.innerHTML = '<span class="spin"></span>Membuat...';
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spin"></span>Membuat...';
 
-    var imgUrl = 'https://api.qrserver.com/v1/create-qr-code/'
-      + '?size=' + sz + 'x' + sz
-      + '&data=' + encodeURIComponent(val)
-      + '&bgcolor=110926&color=c7d2fe&margin=16';
-    var disp = Math.min(sz, 240);
+  // 🎯 KONTRAS OPTIMAL UNTUK SCAN 100%
+  var imgUrl = 'https://api.qrserver.com/v1/create-qr-code/'
+    + '?size=' + sz + 'x' + sz
+    + '&data=' + encodeURIComponent(val)
+    + '&color=1a1a1a'           // 🖤 ABU GELAP (#1a1a1a) - BUKAN hitam pekat
+    + '&bgcolor=f8f9fa'         // 🤍 PUTIH LEMBUT (#f8f9fa)
+    + '&margin=3'               // Margin pas
+    + '&qzone=1'                // Quiet zone standar
+    + '&ecc=L';                 // Error correction LOW (lebih padat)
 
-    setTimeout(function () {
-      var safeUrl = imgUrl.replace(/'/g, '%27');
-      document.getElementById('qr-stage').innerHTML = [
-        '<div class="qr-result">',
-        '<div class="qr-img-col">',
-          '<img src="' + imgUrl + '" width="' + disp + '" height="' + disp + '" alt="QR Code"/>',
+  var disp = Math.min(sz, 320);
+
+  setTimeout(function () {
+    var safeUrl = imgUrl.replace(/'/g, '%27');
+    document.getElementById('qr-stage').innerHTML = [
+      '<div class="qr-result">',
+      '<div class="qr-img-col">',
+        '<img src="' + imgUrl + '" width="' + disp + '" height="' + disp + '" alt="QR Code" loading="lazy"/>',
+        '<div style="margin-top:12px;font-size:11px;color:#666;text-align:center;">✅ Kontras optimal - Mudah scan!</div>',
+      '</div>',
+      '<div class="qr-info-col">',
+        '<div>',
+          '<div class="field-label">URL Target</div>',
+          '<div class="qr-url-text">' + val + '</div>',
         '</div>',
-        '<div class="qr-info-col">',
-          '<div>',
-            '<div class="field-label">URL Target</div>',
-            '<div class="qr-url-text">' + val + '</div>',
-          '</div>',
-          '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2)">',
-            '<span>Resolusi</span>',
-            '<span style="color:var(--txt);font-weight:600">' + sz + '\xd7' + sz + 'px</span>',
-          '</div>',
-          '<div class="divider"></div>',
-          '<div style="display:flex;flex-wrap:wrap;gap:8px">',
-            '<a class="btn-sm" href="' + imgUrl + '" download="qrcode.png" target="_blank">' + DL_ICO + 'Unduh PNG</a>',
-            '<button class="btn-sm" onclick="cp(\'' + safeUrl + '\')">' + CP_ICO + 'Salin URL Gambar</button>',
-          '</div>',
-          '<div class="badge-ok">' + OK_ICO + 'QR siap digunakan</div>',
+        '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2)">',
+          '<span>Ukuran</span>',
+          '<span style="color:var(--txt);font-weight:600">' + sz + 'px</span>',
         '</div>',
-        '</div>'
-      ].join('');
+        '<div class="divider"></div>',
+        '<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">',
+          '<a class="btn-sm" href="' + imgUrl + '" download="qrcode.png">' + DL_ICO + 'PNG</a>',
+          '<a class="btn-sm" href="' + imgUrl.replace('png','svg') + '" download="qrcode.svg">' + DL_ICO + 'SVG</a>',
+          '<button class="btn-sm" onclick="cp(\'' + safeUrl + '\')">' + CP_ICO + 'URL</button>',
+        '</div>',
+        '<div class="badge-ok">' + OK_ICO + 'Siap scan di semua device</div>',
+      '</div>',
+      '</div>'
+    ].join('');
 
-      btn.disabled    = false;
-      btn.textContent = 'Buat QR \u2197';
-      toast('QR Code berhasil dibuat!');
-    }, 600);
-  };
+    btn.disabled    = false;
+    btn.innerHTML   = '🔄 Buat Lagi';
+    toast('✅ QR Code optimal - Test scan sekarang!');
+  }, 600);
+};
 
   /* ── SHORTEN ──────────────────────────────────────────────── */
   window.shorten = function () {
