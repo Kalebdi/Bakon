@@ -89,7 +89,7 @@
     var imgUrl = 'https://api.qrserver.com/v1/create-qr-code/'
       + '?size=' + sz + 'x' + sz
       + '&data=' + encodeURIComponent(val)
-      + '&bgcolor=0f172a&color=c7d2fe&margin=16';
+      + '&bgcolor=ffffff&color=000000&margin=16';
 
     var disp = Math.min(sz, 260);
 
