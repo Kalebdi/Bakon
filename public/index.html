@@ -7,7 +7,6 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-/* 🎨 CSS Variables */
 :root{
   --g1:#6366f1; --g2:#8b5cf6; --g3:#06b6d4;
   --card:rgba(255,255,255,0.04); --card2:rgba(255,255,255,0.08);
@@ -16,7 +15,6 @@
   --r:20px; --r2:14px;
 }
 
-/* 🧹 Reset */
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
@@ -30,7 +28,6 @@ body{
   color:var(--txt);
 }
 
-/* 📦 App Container */
 .app{
   background:linear-gradient(135deg,#0a0718 0%,#110926 35%,#0d1221 100%);
   border-radius:var(--r);
@@ -38,12 +35,11 @@ body{
   width:100%;
   max-width:700px;
   position:relative;
-  overflow:hidden;
+  overflow:visible;
   box-shadow:0 20px 60px rgba(0,0,0,0.6);
   border:1px solid var(--bdr);
 }
 
-/* 🌫️ Background Blobs (ringan) */
 .app::before,.app::after{
   content:''; position:absolute; border-radius:50%;
   filter:blur(40px); opacity:0.5; pointer-events:none; z-index:0;
@@ -60,7 +56,6 @@ body{
 }
 @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-15px)}}
 
-/* 🏷️ Header */
 .header{margin-bottom:1.75rem; position:relative; z-index:1; text-align:center}
 .header h1{
   font-family:'Syne',sans-serif; font-size:28px; font-weight:800;
@@ -70,7 +65,6 @@ body{
 }
 .header p{font-size:14px; color:var(--txt2)}
 
-/* 🔘 Tabs */
 .tabs{
   display:flex; gap:6px; margin-bottom:1.5rem;
   background:var(--card2); padding:6px; border-radius:var(--r);
@@ -90,7 +84,6 @@ body{
 .tab.active::before{opacity:1}
 .tab:hover:not(.active){color:var(--txt); background:var(--card)}
 
-/* 📝 Form Elements */
 .field-label{
   font-size:12px; font-weight:700; color:var(--txt2);
   text-transform:uppercase; letter-spacing:1px;
@@ -101,6 +94,7 @@ body{
   background:linear-gradient(135deg,var(--g1),var(--g3));
   border-radius:2px; flex-shrink:0;
 }
+
 .input-row{display:flex; gap:10px; margin-bottom:1rem; align-items:flex-end}
 .inp{
   flex:1; padding:14px 16px; border:1px solid var(--bdr2);
@@ -109,6 +103,7 @@ body{
 }
 .inp:focus{border-color:var(--g1); background:var(--card); box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
 .inp::placeholder{color:var(--txt3)}
+
 .btn-gen{
   padding:14px 22px; border:none; border-radius:var(--r2);
   background:linear-gradient(135deg,var(--g1),var(--g2)); color:#fff;
@@ -117,107 +112,229 @@ body{
 }
 .btn-gen:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(99,102,241,0.4)}
 
-/* 🖼️ QR Stage - CENTERED & 400px READY */
+/* 🔥 FIX: QR Stage Container */
 .qr-stage{
-  border:1px solid var(--bdr2); border-radius:var(--r);
-  background:var(--card); min-height:420px; margin-top:1rem;
-  display:flex !important; align-items:center !important; justify-content:center !important;
-  padding:1.5rem; position:relative; z-index:1;
+  border:1px solid var(--bdr2); 
+  border-radius:var(--r);
+  background:var(--card); 
+  min-height:200px;
+  margin-top:1rem;
+  padding:2rem;
+  position:relative; 
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:visible; /* Allow QR to breathe */
 }
-.qr-stage > * { position:relative; z-index:2 }
 
-/* Placeholder state */
+/* Placeholder */
 .qr-empty{
   display:flex; flex-direction:column; align-items:center; gap:12px;
   color:var(--txt2); text-align:center;
 }
 .qr-empty svg{opacity:0.6}
 
-/* QR Image Container - CENTER & SCALE */
-#qrcode, .qr-stage img, .qr-stage canvas {
-  display:block !important;
-  margin:0 auto !important;
-  max-width:400px !important;
-  max-height:400px !important;
-  width:auto !important;
-  height:auto !important;
-  border-radius:var(--r2);
-  padding:12px;
+/* 🔥 FIX: QR Code Container - Dynamic Size */
+#qrcode{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
   background:#fff;
-  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  border-radius:var(--r2);
+  box-shadow:0 8px 30px rgba(0,0,0,0.3);
+  margin:1rem auto;
+  /* Size will be controlled by JS via inline style */
+  transition:all 0.3s ease;
+}
+
+#qrcode img,
+#qrcode canvas{
+  display:block !important;
+  max-width:100% !important;
+  height:auto !important;
+  image-rendering:crisp-edges;
+  image-rendering:-webkit-optimize-contrast;
 }
 
 /* Download Button */
 .download-qr-btn{
-  margin-top:1rem; padding:8px 20px; border:1px solid var(--bdr2);
-  border-radius:30px; background:var(--card2); color:var(--txt);
-  font-size:13px; cursor:pointer; transition:0.2s;
+  margin-top:1rem; 
+  padding:10px 24px; 
+  border:1px solid var(--bdr2);
+  border-radius:30px; 
+  background:var(--card2); 
+  color:var(--txt);
+  font-size:13px; 
+  font-weight:600;
+  cursor:pointer; 
+  transition:0.2s;
 }
-.download-qr-btn:hover{background:var(--g1); border-color:var(--g1)}
+.download-qr-btn:hover{
+  background:linear-gradient(135deg,var(--g1),var(--g2)); 
+  border-color:transparent;
+  transform:translateY(-1px);
+}
 
-/* 🎚️ Size Slider */
-.size-track{display:flex; align-items:center; gap:14px; margin:1rem 0 1.25rem}
+/* 🔥 FIX: Slider dengan kontrol lebih baik */
+.size-track{
+  display:flex; 
+  align-items:center; 
+  gap:14px; 
+  margin:1.5rem 0 1rem;
+  padding:1rem;
+  background:var(--card2);
+  border-radius:var(--r2);
+  border:1px solid var(--bdr);
+}
+
 .size-track input[type="range"]{
-  flex:1; -webkit-appearance:none; height:6px;
+  flex:1; 
+  -webkit-appearance:none; 
+  height:6px;
   background:linear-gradient(90deg,var(--g1),var(--g3));
-  border-radius:3px; cursor:pointer;
-}
-.size-track input::-webkit-slider-thumb{
-  -webkit-appearance:none; width:20px; height:20px;
-  border-radius:50%; background:#fff; border:2px solid var(--g1);
-  cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);
-}
-.size-badge{
-  font-size:13px; font-weight:600; color:var(--txt);
-  background:var(--card2); border:1px solid var(--bdr2);
-  padding:6px 14px; border-radius:20px; min-width:70px; text-align:center;
+  border-radius:3px; 
+  cursor:pointer;
+  outline:none;
 }
 
-/* 🔗 Short Result */
+.size-track input::-webkit-slider-thumb{
+  -webkit-appearance:none; 
+  width:22px; 
+  height:22px;
+  border-radius:50%; 
+  background:#fff; 
+  border:3px solid var(--g1);
+  cursor:pointer; 
+  box-shadow:0 2px 10px rgba(0,0,0,0.3);
+  transition:transform 0.1s;
+}
+
+.size-track input::-webkit-slider-thumb:hover{
+  transform:scale(1.1);
+}
+
+.size-badge{
+  font-size:13px; 
+  font-weight:700; 
+  color:var(--txt);
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  padding:8px 16px; 
+  border-radius:20px; 
+  min-width:75px; 
+  text-align:center;
+  box-shadow:0 4px 12px rgba(99,102,241,0.3);
+}
+
+/* Short Result */
 #result{margin-top:1rem}
 .short-card{
-  background:var(--card2); border:1px solid var(--bdr2);
-  border-radius:var(--r2); padding:1rem;
+  background:var(--card2); 
+  border:1px solid var(--bdr2);
+  border-radius:var(--r2); 
+  padding:1rem;
 }
 .short-link-row{
-  display:flex; align-items:center; justify-content:space-between;
-  gap:10px; background:rgba(0,0,0,0.25); border-radius:30px;
+  display:flex; 
+  align-items:center; 
+  justify-content:space-between;
+  gap:10px; 
+  background:rgba(0,0,0,0.25); 
+  border-radius:30px;
   padding:6px 6px 6px 14px;
 }
-.short-link{font-family:monospace; font-size:13px; color:#a5f3fc; word-break:break-all}
+.short-link{
+  font-family:monospace; 
+  font-size:13px; 
+  color:#a5f3fc; 
+  word-break:break-all;
+}
 .copy-btn{
-  background:var(--g1); border:none; border-radius:24px;
-  padding:5px 12px; color:#fff; font-size:12px; cursor:pointer;
+  background:var(--g1); 
+  border:none; 
+  border-radius:24px;
+  padding:5px 12px; 
+  color:#fff; 
+  font-size:12px; 
+  cursor:pointer;
 }
 .copy-btn:hover{background:var(--g2)}
-.original-url{font-size:11px; color:var(--txt2); margin-top:8px; word-break:break-all}
+.original-url{
+  font-size:11px; 
+  color:var(--txt2); 
+  margin-top:8px; 
+  word-break:break-all;
+}
 
-/* 🍞 Toast */
+/* Toast */
 .toast{
-  position:fixed; bottom:24px; left:50%;
+  position:fixed; 
+  bottom:24px; 
+  left:50%;
   transform:translateX(-50%) translateY(20px);
   background:linear-gradient(135deg,var(--g1),var(--g2));
-  color:#fff; padding:12px 24px; border-radius:30px;
-  font-size:14px; font-weight:600; z-index:9999;
-  opacity:0; transition:all 0.3s ease; pointer-events:none;
+  color:#fff; 
+  padding:12px 24px; 
+  border-radius:30px;
+  font-size:14px; 
+  font-weight:600; 
+  z-index:9999;
+  opacity:0; 
+  transition:all 0.3s ease; 
+  pointer-events:none;
   box-shadow:0 8px 24px rgba(99,102,241,0.4);
 }
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 .toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c)}
 
-/* 🎭 Panel Transition */
+/* Panel */
 .panel{display:none; opacity:0; transition:opacity 0.25s ease}
 .panel.active{display:block; opacity:1}
 
-/* 📱 Responsive */
+/* 🔥 FIX: Mobile Responsive */
 @media(max-width:640px){
-  .app{padding:1.5rem; min-height:auto}
+  body{padding:20px 12px 40px}
+  .app{
+    padding:1.5rem 1rem; 
+    min-height:auto;
+    border-radius:16px;
+  }
   .header h1{font-size:24px}
+  .header p{font-size:13px}
   .input-row{flex-direction:column}
   .btn-gen{width:100%}
-  .tabs{flex-wrap:wrap}
-  .qr-stage{min-height:380px; padding:1rem}
-  #qrcode, .qr-stage img, .qr-stage canvas{max-width:95vw !important}
+  .tabs{padding:4px}
+  .tab{padding:10px 12px; font-size:13px}
+  
+  /* Mobile QR Stage */
+  .qr-stage{
+    padding:1.5rem 1rem;
+    min-height:180px;
+  }
+  
+  #qrcode{
+    padding:12px;
+    width:100%;
+    max-width:calc(100vw - 48px); /* Account for padding */
+  }
+  
+  .size-track{
+    flex-direction:column;
+    gap:10px;
+    padding:0.75rem;
+  }
+  
+  .size-track input[type="range"]{
+    width:100%;
+  }
+}
+
+@media(min-width:768px){
+  .qr-stage{
+    min-height:280px;
+  }
 }
 </style>
 </head>
@@ -238,14 +355,14 @@ body{
   <div id="qr" class="panel active">
     <div class="field-label">URL atau Teks</div>
     <div class="input-row">
-      <input class="inp" id="qi" placeholder="https://contoh.com " oninput="resetQR&&resetQR()">
+      <input class="inp" id="qi" placeholder="https://contoh.com" oninput="resetQR&&resetQR()">
       <button class="btn-gen" id="genBtn" onclick="genQR&&genQR()">Buat QR ↗</button>
     </div>
     
     <div class="field-label">Ukuran QR</div>
     <div class="size-track">
       <input type="range" min="120" max="400" step="40" value="200" id="qs"
-             oninput="document.getElementById('szv').textContent=this.value+'px';resetQR&&resetQR()">
+             oninput="updateQRSize(this.value)">
       <div class="size-badge" id="szv">200px</div>
     </div>
     
@@ -259,7 +376,7 @@ body{
         </svg>
         <span>Masukkan URL lalu klik <strong>Buat QR</strong></span>
       </div>
-      <!-- QR will be injected here by backend script -->
+      <div id="qrcode" style="display:none;"></div>
     </div>
   </div>
 
@@ -267,18 +384,17 @@ body{
   <div id="short" class="panel">
     <div class="field-label">Tempel URL Panjang</div>
     <div class="input-row">
-      <input class="inp" id="url" placeholder="https://tautan-sangat-panjang.com/path/... ">
+      <input class="inp" id="url" placeholder="https://tautan-sangat-panjang.com/path/...">
       <button class="btn-gen" id="shortBtn" onclick="shorten&&shorten()">Persingkat ↗</button>
     </div>
     <div id="result"></div>
   </div>
 </div>
 
-<!-- Toast Container -->
 <div id="toast" class="toast"></div>
 
 <script>
-// ── TAB SWITCHER (ORIGINAL - TIDAK DIUBAH) ─────────────────
+// Tab Switcher
 function sw(id, el) {
   document.querySelectorAll('.panel').forEach(function(p) {
     p.classList.remove('active');
@@ -293,10 +409,76 @@ function sw(id, el) {
   el.classList.add('active');
 }
 
-// ── HELPER: Toast (digunakan oleh backend script) ──────────
+// 🔥 FIX: Update QR Size dengan benar
+function updateQRSize(size) {
+  document.getElementById('szv').textContent = size + 'px';
+  
+  // Update QR code container size if exists
+  var qrContainer = document.getElementById('qrcode');
+  var qrImg = qrContainer.querySelector('img, canvas');
+  
+  if (qrImg) {
+    // Set explicit size
+    qrImg.style.width = size + 'px';
+    qrImg.style.height = size + 'px';
+    qrContainer.style.width = (parseInt(size) + 32) + 'px'; // + padding
+  }
+  
+  // Trigger backend reset if exists
+  if (typeof resetQR === 'function') {
+    resetQR();
+  }
+}
+
+// 🔥 FIX: Helper untuk show QR dengan ukuran yang benar
+window.showQRCode = function(dataUrl, size) {
+  var placeholder = document.getElementById('qrPlaceholder');
+  var qrContainer = document.getElementById('qrcode');
+  var stage = document.getElementById('qr-stage');
+  
+  if (placeholder) placeholder.style.display = 'none';
+  
+  // Clear existing
+  qrContainer.innerHTML = '';
+  qrContainer.style.display = 'flex';
+  
+  // Create image
+  var img = document.createElement('img');
+  img.src = dataUrl;
+  img.alt = 'QR Code';
+  img.style.width = size + 'px';
+  img.style.height = size + 'px';
+  img.style.maxWidth = '100%';
+  img.style.height = 'auto';
+  
+  qrContainer.appendChild(img);
+  
+  // Add download button if not exists
+  var dlBtn = stage.querySelector('.download-qr-btn');
+  if (!dlBtn) {
+    dlBtn = document.createElement('button');
+    dlBtn.className = 'download-qr-btn';
+    dlBtn.textContent = '⬇️ Download PNG';
+    dlBtn.onclick = function() {
+      var link = document.createElement('a');
+      link.download = 'qrcode-' + size + 'px.png';
+      link.href = dataUrl;
+      link.click();
+      showToast('QR diunduh!');
+    };
+    stage.appendChild(dlBtn);
+  }
+};
+
+// Toast helper
 function showToast(msg, isErr) {
   var t = document.getElementById('toast');
-  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
+  if (!t) { 
+    t = document.createElement('div'); 
+    t.id = 'toast'; 
+    t.className = 'toast'; 
+    document.body.appendChild(t); 
+  }
   t.textContent = msg;
   t.className = 'toast' + (isErr ? ' err' : '');
   requestAnimationFrame(function(){
@@ -305,38 +487,7 @@ function showToast(msg, isErr) {
   });
 }
 
-// ── QR CENTERING FIX: Observes when QR is injected ─────────
-// Backend script will inject <img> or <canvas> into #qr-stage
-// This ensures it's centered and placeholder is hidden
-(function(){
-  var stage = document.getElementById('qr-stage');
-  var placeholder = document.getElementById('qrPlaceholder');
-  
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(m) {
-      m.addedNodes.forEach(function(node) {
-        if (node.nodeType === 1) { // element
-          // Hide placeholder if QR element added
-          if (node.tagName === 'IMG' || node.tagName === 'CANVAS' || node.id === 'qrcode') {
-            if (placeholder) placeholder.style.display = 'none';
-            // Ensure centering styles
-            node.style.margin = '0 auto';
-            node.style.display = 'block';
-            node.style.maxWidth = '400px';
-            node.style.maxHeight = '400px';
-          }
-        }
-      });
-    });
-  });
-  
-  if (stage && window.MutationObserver) {
-    observer.observe(stage, { childList: true, subtree: true });
-  }
-})();
-
-// ── BACKEND SCRIPT LOADER (100% ORIGINAL - JANGAN DIUBAH) ──
-// genQR, shorten, cp, resetQR dimuat dari /api/s via HMAC token
+// Backend Script Loader (100% INTACT)
 (function(){
   function showErr(msg) {
     console.error('[QRTools]', msg);
@@ -350,7 +501,6 @@ function showToast(msg, isErr) {
     });
   }
 
-  // Step 1: ambil token
   fetch('/api/token')
     .then(function(r) {
       if (!r.ok) { showErr('Gagal ambil token (' + r.status + '). Cek APP_SECRET di Vercel.'); return null; }
@@ -358,7 +508,6 @@ function showToast(msg, isErr) {
     })
     .then(function(d) {
       if (!d || !d.t) return null;
-      // Step 2: ambil script pakai token
       return fetch('/api/s?t=' + encodeURIComponent(d.t));
     })
     .then(function(r) {
@@ -370,9 +519,9 @@ function showToast(msg, isErr) {
       if (!code) return;
       try {
         (new Function(code))();
-        console.log('[QRTools] Script berhasil dimuat. genQR:', typeof window.genQR, '| shorten:', typeof window.shorten);
+        console.log('[QRTools] Script loaded. genQR:', typeof window.genQR, '| shorten:', typeof window.shorten);
       } catch(e) {
-        showErr('Error saat jalankan script: ' + e.message);
+        showErr('Error script: ' + e.message);
         console.error('[QRTools] Script error:', e);
       }
     })
