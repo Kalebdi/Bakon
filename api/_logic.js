@@ -92,15 +92,14 @@
       + '&bgcolor=ffffff&color=000000&margin=16';
 
     var disp = Math.min(sz, 260);
-
-    setTimeout(function () {
+    setTimeout(async function () { // Tambahkan 'async' di sini
       var stage = document.getElementById('qr-stage');
 
-      // Build result: gambar QR + tombol Download PNG saja
-      // Tidak ada tombol Salin, tidak ada SVG link
+      // WADAH (Tetap pakai ini agar rapi)
       var wrap  = document.createElement('div');
       wrap.className = 'qr-result-wrap';
 
+      // GAMBAR QR
       var img = document.createElement('img');
       img.src    = imgUrl;
       img.width  = disp;
@@ -108,19 +107,36 @@
       img.alt    = 'QR Code';
       img.style.borderRadius = '10px';
 
-      var dlBtn = document.createElement('a');
-      dlBtn.href      = imgUrl;
-      dlBtn.download  = 'qrcode.png';
-      dlBtn.target    = '_blank';
+      // TOMBOL DOWNLOAD (LOGIKA BARU)
+      var dlBtn = document.createElement('button'); 
       dlBtn.className = 'btn-download-png';
       dlBtn.innerHTML = DL_ICO + ' Download PNG';
+      
+      dlBtn.onclick = async function() {
+        try {
+          const response = await fetch(imgUrl);
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.download = 'soli-qr-' + Date.now() + '.png'; 
+          a.href = url;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+          toast('Berhasil mengunduh!', 'success');
+        } catch (e) {
+          window.open(imgUrl, '_blank'); 
+        }
+      };
 
+      // MASUKKAN KE DALAM STAGE
       wrap.appendChild(img);
       wrap.appendChild(dlBtn);
-
       stage.innerHTML = '';
       stage.appendChild(wrap);
 
+      // RESET TOMBOL GENERATE
       btn.disabled    = false;
       btn.innerHTML   = '<span>Buat QR</span>'
         + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
@@ -128,8 +144,7 @@
 
       toast('QR Code berhasil dibuat!', 'success');
     }, 600);
-  };
-
+  
   /* ── SHORTEN ──────────────────────────────────────────────── */
   // Tidak ada QR kecil — hanya card dengan link pendek + tombol Salin bergradient
   window.shorten = function () {
