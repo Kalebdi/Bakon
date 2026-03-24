@@ -70,8 +70,7 @@
     + '<line x1="12" y1="15" x2="12" y2="3"/>'
     + '</svg>';
 
-  /* ── GENERATE QR ──────────────────────────────────────────── */
-  // Tidak ada tombol Salin, tidak ada SVG — hanya gambar QR + tombol Download PNG
+  /* ─  /* ── GENERATE QR ──────────────────────────────────────────── */
   window.genQR = function () {
     var val = document.getElementById('qi').value.trim();
     var sz  = parseInt(document.getElementById('qs').value, 10);
@@ -86,32 +85,32 @@
     btn.disabled  = true;
     btn.innerHTML = '<span class="spin" style="display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px"></span>Membuat...';
 
+    // Warna sudah Putih-Hitam sesuai request
     var imgUrl = 'https://api.qrserver.com/v1/create-qr-code/'
       + '?size=' + sz + 'x' + sz
       + '&data=' + encodeURIComponent(val)
       + '&bgcolor=ffffff&color=000000&margin=16';
 
     var disp = Math.min(sz, 260);
-    setTimeout(async function () { // Tambahkan 'async' di sini
-      var stage = document.getElementById('qr-stage');
 
-      // WADAH (Tetap pakai ini agar rapi)
+    // Bagian async function di bawah ini yang harus teliti copy-nya
+    setTimeout(async function () { 
+      var stage = document.getElementById('qr-stage');
       var wrap  = document.createElement('div');
       wrap.className = 'qr-result-wrap';
 
-      // GAMBAR QR
       var img = document.createElement('img');
       img.src    = imgUrl;
       img.width  = disp;
       img.height = disp;
-      img.alt    = 'QR Code';
       img.style.borderRadius = '10px';
 
-      // TOMBOL DOWNLOAD (LOGIKA BARU)
-      var dlBtn = document.createElement('button'); 
+      // Tombol Download PNG
+      var dlBtn = document.createElement('button');
       dlBtn.className = 'btn-download-png';
       dlBtn.innerHTML = DL_ICO + ' Download PNG';
       
+      // Logic Download Otomatis
       dlBtn.onclick = async function() {
         try {
           const response = await fetch(imgUrl);
@@ -130,13 +129,12 @@
         }
       };
 
-      // MASUKKAN KE DALAM STAGE
       wrap.appendChild(img);
       wrap.appendChild(dlBtn);
+
       stage.innerHTML = '';
       stage.appendChild(wrap);
 
-      // RESET TOMBOL GENERATE
       btn.disabled    = false;
       btn.innerHTML   = '<span>Buat QR</span>'
         + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
@@ -144,7 +142,9 @@
 
       toast('QR Code berhasil dibuat!', 'success');
     }, 600);
-  
+  };
+        
+
   /* ── SHORTEN ──────────────────────────────────────────────── */
   // Tidak ada QR kecil — hanya card dengan link pendek + tombol Salin bergradient
   window.shorten = function () {
