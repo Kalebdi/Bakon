@@ -6,15 +6,21 @@
 <title>SOLITOOLS</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* --- CSS ONLY FIX (NO JS INTERFERENCE) --- */
+/* --- CSS VARIABLES & RESET --- */
 :root {
   --primary: #6366f1;
+  --primary-dark: #4f46e5;
   --secondary: #8b5cf6;
+  --accent: #06b6d4;
   --bg-dark: #020617;
   --bg-card: rgba(30, 41, 59, 0.9);
+  --bg-input: rgba(15, 23, 42, 0.8);
+  --bg-result: rgba(99, 102, 241, 0.1);
+  --border: rgba(255,255,255,0.15);
   --text-main: #f8fafc;
   --text-muted: #cbd5e1;
   --radius: 16px;
+  --radius-sm: 12px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -22,8 +28,9 @@
 body {
   font-family: 'DM Sans', sans-serif;
   background-color: var(--bg-dark);
-  background-image: radial-gradient(circle at 20% 10%, rgba(99, 102, 241, 0.15), transparent 40%),
-                    radial-gradient(circle at 80% 90%, rgba(139, 92, 246, 0.15), transparent 40%);
+  background-image: 
+    radial-gradient(circle at 20% 10%, rgba(99, 102, 241, 0.15), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(139, 92, 246, 0.15), transparent 40%);
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
@@ -32,17 +39,19 @@ body {
   padding: 20px 16px 40px;
 }
 
+/* --- APP CONTAINER --- */
 .app {
   width: 100%;
   max-width: 480px;
   background: var(--bg-card);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 24px 20px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
+/* --- HEADER --- */
 .header { text-align: center; margin-bottom: 24px; }
 .header h1 {
   font-family: 'Syne', sans-serif;
@@ -55,13 +64,14 @@ body {
 }
 .header p { color: var(--text-muted); font-size: 15px; }
 
+/* --- TABS --- */
 .tabs {
   display: flex;
   background: rgba(0,0,0,0.3);
   padding: 5px;
   border-radius: 12px;
   margin-bottom: 24px;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--border);
 }
 .tab {
   flex: 1;
@@ -73,17 +83,24 @@ body {
   font-size: 15px;
   border-radius: 10px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 .tab.active {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
+.tab:hover:not(.active) {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-main);
+}
 
+/* --- PANELS --- */
 .panel { display: none; }
 .panel.active { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+/* --- FORM ELEMENTS --- */
 .label {
   font-size: 13px;
   font-weight: 700;
@@ -91,45 +108,59 @@ body {
   color: var(--primary);
   margin-bottom: 10px;
   display: block;
+  letter-spacing: 0.5px;
 }
 
 .input-row {
   display: flex;
-  flex-direction: column; /* Stack vertikal untuk HP */
+  flex-direction: column;
   gap: 12px;
   margin-bottom: 20px;
 }
 
 .inp {
   width: 100%;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 16px;
-  color: white;
-  font-size: 16px; /* Mencegah zoom otomatis di iPhone */
+  color: var(--text-main);
+  font-size: 16px;
   font-family: inherit;
+  transition: all 0.2s ease;
 }
 .inp:focus {
   border-color: var(--primary);
   outline: none;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  background: rgba(15, 23, 42, 0.9);
 }
+.inp::placeholder { color: rgba(203, 213, 225, 0.5); }
 
 .btn-gen {
   width: 100%;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   padding: 16px;
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
+  transition: all 0.2s ease;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
-.btn-gen:active { transform: scale(0.98); }
+.btn-gen:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+.btn-gen:active { transform: translateY(0) scale(0.98); }
 
+/* --- SLIDER --- */
 .size-track {
   display: flex;
   align-items: center;
@@ -137,14 +168,16 @@ body {
   margin: 20px 0;
   background: rgba(255,255,255,0.05);
   padding: 16px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
 input[type=range] {
   flex: 1;
   -webkit-appearance: none;
   height: 6px;
-  background: linear-gradient(90deg, var(--primary), #06b6d4);
+  background: linear-gradient(90deg, var(--primary), var(--accent));
   border-radius: 3px;
+  cursor: pointer;
 }
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -154,6 +187,11 @@ input[type=range]::-webkit-slider-thumb {
   border-radius: 50%;
   border: 3px solid var(--primary);
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
 }
 .size-badge {
   background: rgba(99, 102, 241, 0.2);
@@ -164,13 +202,14 @@ input[type=range]::-webkit-slider-thumb {
   font-size: 14px;
   min-width: 70px;
   text-align: center;
+  border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
-/* QR Stage Styling - Dibiarkan alami untuk backend */
+/* --- QR STAGE --- */
 .qr-stage {
   background: rgba(0,0,0,0.2);
-  border: 1px dashed rgba(255,255,255,0.1);
-  border-radius: 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
   min-height: 280px;
   display: flex;
   flex-direction: column;
@@ -179,10 +218,8 @@ input[type=range]::-webkit-slider-thumb {
   padding: 20px;
   margin-top: 10px;
   text-align: center;
-  overflow: hidden; /* Mencegah overflow visual saja */
+  overflow: hidden;
 }
-
-/* Pastikan gambar QR responsif tanpa JS */
 .qr-stage img, .qr-stage canvas, .qr-stage div[id^="qrcode"] {
   max-width: 100%;
   height: auto;
@@ -190,55 +227,93 @@ input[type=range]::-webkit-slider-thumb {
   margin: 0 auto;
 }
 
-/* Tombol Download (Akan dimunculkan oleh backend logic jika ada, atau manual via CSS jika perlu) */
+/* Tombol Download PNG dengan background */
 .download-qr-btn {
   margin-top: 15px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: none;
   color: white;
   padding: 12px 24px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transition: all 0.2s ease;
+}
+.download-qr-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
 }
 
-/* Shortener Result */
+/* --- SHORTENER RESULT (Dengan Background Card) --- */
 #result { margin-top: 15px; }
+
 .short-card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 15px;
+  background: var(--bg-result);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 16px;
   margin-top: 10px;
+  animation: slideUp 0.3s ease;
 }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
 .short-link-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   background: rgba(0,0,0,0.3);
-  padding: 10px;
+  padding: 12px;
   border-radius: 30px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
 }
+
 .short-link {
-  color: #06b6d4;
-  font-family: monospace;
+  color: var(--accent);
+  font-family: 'DM Sans', monospace;
   font-size: 14px;
+  font-weight: 600;
   word-break: break-all;
-  margin-right: 10px;
+  flex: 1;
 }
+
 .copy-btn {
   background: var(--primary);
   border: none;
   color: white;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.copy-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+.copy-btn:active {
+  transform: translateY(0);
 }
 
+.original-url {
+  font-size: 12px;
+  color: var(--text-muted);
+  word-break: break-all;
+  margin-top: 8px;
+  display: block;
+  line-height: 1.4;
+}
+
+/* --- TOAST --- */
 .toast {
   position: fixed;
   bottom: 30px;
@@ -252,12 +327,39 @@ input[type=range]::-webkit-slider-thumb {
   font-weight: 600;
   z-index: 9999;
   opacity: 0;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   pointer-events: none;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--border);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.4);
 }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.err { background: #450a0a; border-color: #ef4444; color: #fca5a5; }
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast.err {
+  background: #450a0a;
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+.toast.success {
+  background: #064e3b;
+  border-color: #10b981;
+  color: #6ee7b7;
+}
+
+/* --- RESPONSIVE DESKTOP --- */
+@media (min-width: 768px) {
+  .input-row {
+    flex-direction: row;
+  }
+  .inp {
+    flex: 1;
+  }
+  .btn-gen {
+    width: auto;
+    padding: 16px 32px;
+  }
+}
 </style>
 </head>
 <body>
@@ -277,9 +379,11 @@ input[type=range]::-webkit-slider-thumb {
   <div id="qr" class="panel active">
     <label class="label">URL atau Teks</label>
     <div class="input-row">
-      <!-- ID dan Event Handler disesuaikan dengan harapan backend -->
       <input class="inp" id="qi" placeholder="https://contoh.com" oninput="if(typeof resetQR==='function') resetQR()">
-      <button class="btn-gen" id="genBtn" onclick="if(typeof genQR==='function') genQR()">Buat QR ↗</button>
+      <button class="btn-gen" id="genBtn" onclick="if(typeof genQR==='function') genQR()">
+        <span>Buat QR</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </button>
     </div>
 
     <label class="label">Ukuran QR</label>
@@ -291,7 +395,12 @@ input[type=range]::-webkit-slider-thumb {
 
     <div class="qr-stage" id="qr-stage">
       <div id="qr-empty-msg" style="color:var(--text-muted); display:flex; flex-direction:column; align-items:center; gap:10px;">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+          <circle cx="17.5" cy="17.5" r="2.5"/>
+        </svg>
         <span>Masukkan URL lalu klik Buat QR</span>
       </div>
       <!-- Backend akan inject QR di sini -->
@@ -303,7 +412,10 @@ input[type=range]::-webkit-slider-thumb {
     <label class="label">Tempel URL Panjang</label>
     <div class="input-row">
       <input class="inp" id="url" placeholder="https://link-panjang.com/...">
-      <button class="btn-gen" id="shortBtn" onclick="if(typeof shorten==='function') shorten()">Persingkat ↗</button>
+      <button class="btn-gen" id="shortBtn" onclick="if(typeof shorten==='function') shorten()">
+        <span>Persingkat</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </button>
     </div>
     <div id="result"></div>
   </div>
@@ -312,7 +424,7 @@ input[type=range]::-webkit-slider-thumb {
 <div id="toast" class="toast"></div>
 
 <script>
-// 1. Tab Switcher (Simple & Clean)
+// 1. Tab Switcher
 function sw(id, el) {
   document.querySelectorAll('.panel').forEach(p => {
     p.classList.remove('active');
@@ -326,7 +438,7 @@ function sw(id, el) {
   el.classList.add('active');
 }
 
-// 2. Helper Toast (Digunakan oleh backend jika perlu, atau manual)
+// 2. Helper Toast
 function showToast(msg, isErr = false) {
   let t = document.getElementById('toast');
   t.textContent = msg;
@@ -335,13 +447,10 @@ function showToast(msg, isErr = false) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// 3. BACKEND LOADER (100% ASLI - TANPA MODIFIKASI LOGIKA)
-// Hanya membungkus fetch agar tidak error di console jika gagal
+// 3. BACKEND LOADER (100% ASLI - TIDAK DIUBAH)
 (function(){
   function showErr(msg) {
     console.error('[System]', msg);
-    // Optional: tampilkan toast error jika gagal load
-    // showToast(msg, true); 
   }
 
   fetch('/api/token')
@@ -361,12 +470,8 @@ function showToast(msg, isErr = false) {
     .then(code => {
       if (!code) return;
       try {
-        // Eksekusi script backend murni
         new Function(code)();
         console.log('[System] Backend loaded successfully.');
-        
-        // Opsional: Sembunyikan pesan kosong jika backend langsung render
-        // Tapi kita biarkan backend yang mengontrol DOM sepenuhnya
       } catch(e) {
         showErr('Script error: ' + e.message);
       }
@@ -378,3 +483,4 @@ function showToast(msg, isErr = false) {
 </script>
 </body>
 </html>
+
